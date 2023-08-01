@@ -1,7 +1,8 @@
 """This script is a test of plotting chromatogram data using matploplib"""
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
+
+# import numpy as np
 
 # Reading .csv file with chromatogram data
 df1 = pd.read_csv(r"chrom-test1.csv", sep=";", decimal=",")
