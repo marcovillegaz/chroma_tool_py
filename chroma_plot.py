@@ -22,7 +22,7 @@ fig, ax = plt.subplots(figsize=(10, 5))  # Creating figure,ax
 ax.plot(rt1, int1, label="260 nm")
 ax.plot(rt2, int2, label="215 nm")
 
-ax.set_xlim(0, 8)
+ax.set_xlim(0, 9)
 ax.set_ylabel("Intensity")
 ax.set_xlabel("Retention time [min]")
 ax.set_title("Example cromatogram")
