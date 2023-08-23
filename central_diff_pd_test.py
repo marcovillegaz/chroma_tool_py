@@ -4,7 +4,7 @@ import numpy as np
 
 
 def differentiate_dataframe(df, xname, yname, order=2):
-    def central_diff(x, y):
+    def central_diff(x, y):  # Compute central difference derivative
         # Preallocation
         y_diff = np.empty([len(x)])
         y_diff[:] = np.nan

@@ -1,12 +1,12 @@
 """This script changes the names of the chromatograms allocated as csv in a given directory. 
-In my case, the data extracted from the HPLC software present a format that i don't like,
+In my case, the data extracted from the HPLC software has a format that i don't like,
 so i made this program to extract the main sample name, add the number of the replicated,
 and change the name of each file for easy processing.
 
 example:
-    MV__21072023 M0_011 (10).csv    has been renames as      M0_02.csv
-    MV__21072023 M0_012 (10).csv    has been renames as      M0_04.csv
-    MV__21072023 M0_013 (10).csv    has been renames as      M0_06.csv
+    MV__21072023 M0_011 (10).csv    has been renames as      M0_01.csv
+    MV__21072023 M0_012 (10).csv    has been renames as      M0_02.csv
+    MV__21072023 M0_013 (10).csv    has been renames as      M0_03.csv
 
 """
 
