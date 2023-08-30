@@ -9,6 +9,7 @@ example:
     MV__21072023 M0_013 (10).csv    has been renames as      M0_03.csv
 
 """
+# This program need to be rewrite defining functions
 
 import os
 import pandas as pd

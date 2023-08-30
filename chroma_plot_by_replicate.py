@@ -53,6 +53,41 @@ def get_chroma_name(full_name):
     return chroma_name
 
 
+def chroma_plot(
+    data,
+    save_path="None",
+    ylabel="Intensity",
+    xlabel="Retention time [min]",
+    title="Example cromatogram",
+):
+    # Creating figure,ax
+    fig, ax = plt.subplots(figsize=(10, 5))
+    # Figure formatting
+    ax.set_xlim(0, 4000)
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel)
+    ax.set_title(title)
+
+    # Loop of data stored in dictionary
+    for key in data:
+        # Extract data from dictionary
+        x = data[key][0]
+        y = data[key][1]
+        # Plot data
+        ax.plot(x, y, label=key)
+
+    ax.legend()
+
+    # Show or save imae
+    if save_path == "None":
+        plt.show()
+    else:
+        print("\tSaving in plot in", save_path)
+        plt.savefig(image_path, dpi=100)
+
+    plt.close()
+
+
 # INPUT
 # The two wevelength are stored in different paths and csv files has the same names.
 dic_pda = {
@@ -62,11 +97,14 @@ dic_pda = {
 
 save_path = r"path/to/data"
 
-
+# ==============================================================================
 print("The program has been started".center(79, "="))
 
-# MODIFY THIS PART IN THE FUTURE FOR POSSIBLE ERRORS
-dir_list = os.listdir(dic_pda["215nm"])
+# When you usen multichannels (or wavelenghts) in chromatography, each chanell
+# has de same number of data points
+channels = list(dic_pda.keys())
+dir_list = os.listdir(dic_pda[channels[0]])
+
 
 flag = "({}/" + str(len(dir_list)) + ")"
 i = 0
@@ -80,30 +118,23 @@ for file_name in dir_list:
 
     print(flag.format(str(i)), "Processing chromatogram", chroma_name)
 
-    # Plot figure setup
-    fig, ax = plt.subplots(figsize=(10, 5))  # Creating figure,ax
+    chroma_data = {}  # Preallocation
 
     # Loop of wavelengths (in this case 215 and 260nm)
     for key in dic_pda:
+        # Directory path to be read
         read_path = dic_pda[key]
 
-        # Formatting strings with chromatograms path names
+        # Chromatogram path to be read
         chroma_path = formatted_path(read_path, file_name)
 
         x, y = read_chromatogram(chroma_path)
-        ax.plot(x, y, label=file_name, linewidth=1.0)
+        chroma_data[key] = [x, y]
 
-    ax.set_xlim(0, 3500)
-    ax.set_ylabel("Intensity")
-    ax.set_title(chroma_name + " chromatogram")
-    ax.grid()
-    ax.legend()
-
-    print("\tSaving plot in", image_path)
-    plt.savefig(image_path, dpi=600)  # Save figure
-
-    plt.cla()  # Clean current axes
-    plt.clf()  # Clean current figure
-    plt.close()
-
-print("The program has been finished".center(79, "="))
+    chroma_plot(
+        chroma_data,
+        image_path,
+        ylabel="Intensity",
+        xlabel="Retention time [min]",
+        title=chroma_name,
+    )

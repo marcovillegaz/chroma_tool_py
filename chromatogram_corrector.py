@@ -226,3 +226,6 @@ exception_path = r"path/to/data"
 main(
     main_dir_path, input_data_path, output_data_path, output_image_path, exception_path
 )
+
+
+# IN FUTURE APLY os.path.join() to add paths more intelligently

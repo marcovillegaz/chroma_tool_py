@@ -1,12 +1,13 @@
 """chroma_plot2.py
 This script create a plot of the each sample an then it saves them in a directory.
 Each duplicate are plotted in the corresponding sample figure. This allows you to analize
-the peaks of each sample one by one"""
+the peaks of each replicate one by one"""
 
 import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 # INPUT
 dir_path = r"path/to/data"
