@@ -4,6 +4,36 @@ import numpy as np
 from scipy.signal import find_peaks
 from scipy.integrate import trapezoid
 
+
+def read_chromatogram(file_path, channel):
+    """This function opens a csv file that contains the chromatogram data and
+    return the data as numpy arrays.
+
+    Input:
+      filename: path of the correpsonding csv file
+      channel:
+    Output:
+      x: array of time (or number of data)
+      y: intensity of signal"""
+
+    # Reading .csv file with chromatogram data
+    print("\tOpening file")
+    df = pd.read_csv(file_path, sep=";", decimal=".")
+
+    # dataFrame to one-dimensiolnal numpuy array
+    y = df[channel].to_numpy()
+    y = np.reshape(y, y.size)
+
+    # Finite difference calculation
+    print("\tComputing first derivative\n")
+    dy = np.convolve(y, [1, -1]) / 1
+
+    # Define new formatted DataFrame
+    df_out = pd.DataFrame({channel: y, "First diff": dy[1:]})
+
+    return df_out
+
+
 def limits_search(dy, peaks_df, min_slope=1):
     """This function find the limits of specified peaks as indexes.
 
@@ -47,24 +77,18 @@ def limits_search(dy, peaks_df, min_slope=1):
     return peaks_df
 
 
-# Reading .csv file with chromatogram data
-df = pd.read_csv(r"chrom-test1.csv", sep=";", decimal=",")
-print("=" * 50 + "\n", df)
-data = pd.DataFrame()
-data["Intensity"] = df["Intensity"]
-y = data["Intensity"].to_numpy()
-dy = np.convolve(y, [1, -1]) / 1
-data["First diff"] = dy[1:]
-
-print(data)
-
+file_path = r"path/to/data"
+channel = "215nm"
 # Time interval where to search the peak (INPUT)
-interval = [1500, 2500]
+interval = [0, 2500]
+
+data = read_chromatogram(file_path, channel)
+print(data)
 
 
 # PEAK FIND USING SCIPY
 peaks, prop = find_peaks(
-    data["Intensity"].to_numpy(),
+    data[channel].to_numpy(),
     height=5000,  # [min,max]
     threshold=1,  # Threshold is basically the noise level
     distance=2,  # Horizontal distance >=1
@@ -93,25 +117,17 @@ print("\tThere are", len(peaks_data), "peaks have been identified in", interval)
 peaks_data = limits_search(data["First diff"].to_numpy(), peaks_data, min_slope=5)
 
 # PEAK INTEGRATION
-areas = []
-limits = peaks_data["limits idx"].to_list()
-for i,peak in enumerate(peaks_data):
-    limit = limits[i]
-    integration_data = peaks_data[
-    (peaks_data["index"] > limit[0]) & (peaks_data["index"] < limit[1])]
-    area = trapezoid(integration_data["Intensity"],integration_data["index"])
-    areas.insert(i,area) 
+# areas = []
+# limits = peaks_data["limits idx"].to_list()
+# for i, peak in enumerate(peaks_data):
+#  limit = limits[i]
+# integration_data = peaks_data[
+#     (peaks_data["index"] > limit[0]) & (peaks_data["index"] < limit[1])
+# ]
+# area = trapezoid(integration_data["Intensity"], integration_data["index"])
+# areas.insert(i, area)
 
-print("Area are:",areas)
-
-
-
-
-
-
-
-
-
+# print("Area are:", areas)
 
 
 # PLOT INTERVAL AN IDENTIFIED PEAK
@@ -120,15 +136,15 @@ ylabel = "Intensity"
 xlim = 3000
 plt.axvline(x=interval[0], color="r", linestyle="--")
 plt.axvline(x=interval[1], color="r", linestyle="--")
-data["Intensity"].plot(label="Chromatogram")
+data[channel].plot(label="Chromatogram")
 data["First diff"].plot(label="First derivative")
 plt.scatter(peaks_data["index"], peaks_data["height"], color="r", label="Maxima")
 
 # Plot limits.
-limits = peaks_data["limits idx"].to_list()
-print(limits)
-plt.axvline(x=limits[0][0], color="g", linestyle="dotted")
-plt.axvline(x=limits[0][1], color="g", linestyle="dotted")
+# limits = peaks_data["limits idx"].to_list()
+# print(limits)
+# plt.axvline(x=limits[0][0], color="g", linestyle="dotted")
+# plt.axvline(x=limits[0][1], color="g", linestyle="dotted")
 
 ax.legend()
 plt.grid()
