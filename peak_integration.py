@@ -1,8 +1,10 @@
+import ast
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
 from scipy.signal import find_peaks
-from scipy.integrate import trapezoid
+from scipy.integrate import simpson
 
 
 def read_chromatogram(file_path, channel):
@@ -119,36 +121,6 @@ def peak_finder(data, intervals, image="None"):
         print("\nin range: ", key)
         print(post_peak_data[key])
 
-    # Plot peaks in user intervals (OPTIONAL)
-    if image == "True":
-        fig, ax = plt.subplots(figsize=(10, 5))
-        data.iloc[:, 0].plot(grid="True", ylabel="Intensity", label="chromatogram")
-
-        # Get y limits
-        _, ymax = ax.get_ylim()
-
-        for i, interval in enumerate(intervals):
-            # Plot intervals
-            plt.axvline(x=interval[0], color="tab:orange", linestyle="dotted")
-            plt.axvline(x=interval[1], color="tab:orange", linestyle="dotted")
-            # Add text to intervals
-            plt.text(
-                interval[0],
-                ymax * 0.5,
-                "user interval " + str(i + 1),
-                ha="center",
-                va="center",
-                rotation="vertical",
-                backgroundcolor="white",
-            )
-            # Plot peaks in intervals
-            peak_info = post_peak_data[str(interval)]
-            x = peak_info.iloc[:, 0]
-            y = peak_info.iloc[:, 1]
-            plt.scatter(x, y, s=20, marker="x", color="red")
-
-        plt.show()
-
     return post_peak_data
 
 
@@ -168,7 +140,6 @@ def limits_finder(chroma_data, peaks_data, intervals, min_slope=1, image="None")
     y = chroma_data.iloc[:, 0].to_numpy()
     dy = chroma_data.iloc[:, 1].to_numpy()
     dy = np.absolute(dy)
-    print(dy)
 
     out_peak_data = {}
     # Intervals loop for multiple intervals
@@ -197,7 +168,7 @@ def limits_finder(chroma_data, peaks_data, intervals, min_slope=1, image="None")
 
             # Forward slope finding
             for j in range(peak_idx[i] + width, len(dy)):
-                print("index: ", j, "slope: ", dy[j])
+                # print("index: ", j, "slope: ", dy[j])
                 if abs(dy[j]) < min_slope:
                     limit_idx[1] = j
                     limit_val[1] = y[j]
@@ -220,54 +191,103 @@ def limits_finder(chroma_data, peaks_data, intervals, min_slope=1, image="None")
 
         peaks_data[key] = peaks_info
 
-    # Plot peaks in user intervals (OPTIONAL)
-    if image == "True":
-        print("Plotting results".center(50, "="))
-        fig, ax = plt.subplots(figsize=(10, 5))
-        chroma_data.iloc[:, 0].plot(
-            grid="True", ylabel="Intensity", label="chromatogram"
-        )
-        ax.plot(dy)
+    return peaks_data
 
-        # Get y limits
-        _, ymax = ax.get_ylim()
 
-        for i, interval in enumerate(intervals):
-            # Plot intervals
-            interval = list(interval)
-            plt.axvline(x=interval[0], color="tab:orange", linestyle="dotted")
-            plt.axvline(x=interval[1], color="tab:orange", linestyle="dotted")
-            # Add text to intervals
-            plt.text(
-                interval[0],
-                ymax * 0.5,
-                "user interval " + str(i + 1),
-                ha="center",
-                va="center",
-                rotation="vertical",
-                backgroundcolor="white",
-            )
+def peak_integration(chroma_data, peaks_info):
+    """This function integrates each peak using trapzium method"""
 
-            # Plot peaks in intervals
-            peaks_info = peaks_data[str(interval)]
-            print("ESTA ES LA INFO:\n", peaks_info)
-            x_peak = peaks_info.iloc[:, 0]
-            y_peak = peaks_info.iloc[:, 1]
-            plt.scatter(x_peak, y_peak, s=20, marker="x", color="red")
+    print("Peak integration".center(50, "="))
 
-            # Plot integration limits
+    # Extract chromatogram data
+    points = chroma_data.iloc[:, 0].to_numpy()
 
-            list_of_limits_idx = peaks_info.iloc[:, 2].to_numpy()
-            list_of_limits_val = peaks_info.iloc[:, 3].to_numpy()
-            print(list_of_limits_idx)
-            for i in range(0, len(list_of_limits_idx)):
-                x_ab = list_of_limits_idx[i]
-                y_ab = list_of_limits_val[i]
-                plt.scatter(x_ab, y_ab, s=20, marker="x", color="green")
+    # Plot intervals
+    for interval in peaks_data:
+        # Peaks in interval
+        peaks_info = peaks_data[interval]
 
-        plt.show()
+        # Integration limits
+        limits_list = peaks_info.iloc[:, 2].to_numpy()
+
+        areas = np.zeros((len(peaks_info), 1))  # Preallocation of areas
+
+        # Integration of peaks
+        for i, limit in enumerate(limits_list):
+            y = points[(points > limit[0]) & (points < limit[1])]
+            areas[i] = simpson(y, x=None, dx=1.0, axis=-1, even=None)
+
+        peaks_info["Area"] = areas
+        peaks_data[interval] = peaks_info
+
+        print(peaks_data[interval])
 
     return peaks_data
+
+
+def plot_results(chroma_data, peaks_data, intervals):
+    """This function plot the resuls of this script like: intervals, peaks,
+    limits,areas"""
+
+    print("Plotting results".center(50, "="))
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    chroma_data.iloc[:, 0].plot(grid="True", ylabel="Intensity", label="chromatogram")
+    chroma_data.iloc[:, 1].plot(grid="True", label="First derivative")
+
+    # Get y limits
+    _, ymax = ax.get_ylim()
+
+    # Plot intervals
+    for i, interval in enumerate(peaks_data):
+        interval = ast.literal_eval(interval)  # Key (string) to list
+
+        # Plot interval
+        plt.axvline(x=interval[0], color="tab:orange", linestyle="dotted")
+        plt.axvline(x=interval[1], color="tab:orange", linestyle="dotted")
+        # Add text to interval
+        plt.text(
+            interval[0],
+            ymax * 0.5,
+            "user interval " + str(i + 1),
+            ha="center",
+            va="center",
+            rotation="vertical",
+            backgroundcolor="white",
+        )
+
+        # Plot peaks in intervals
+        peaks_info = peaks_data[str(interval)]
+        x_peak = peaks_info.iloc[:, 0]
+        y_peak = peaks_info.iloc[:, 1]
+        plt.scatter(x_peak, y_peak, s=20, marker="x", color="red")
+
+        # Plot integration limits
+        list_of_limits_idx = peaks_info.iloc[:, 2].to_numpy()
+        list_of_limits_val = peaks_info.iloc[:, 3].to_numpy()
+
+        # print(list_of_limits_idx)
+        for i in range(0, len(list_of_limits_idx)):
+            x_ab = list_of_limits_idx[i]
+            y_ab = list_of_limits_val[i]
+            plt.scatter(x_ab, y_ab, s=20, marker="x", color="green")
+
+        # Plot areas
+        for limit in list_of_limits_idx:
+            print(limit)
+            a = limit[0]
+            b = limit[1]
+
+            y = chroma_data.iloc[a : b + 1, 0]
+            iy = y.values
+            ix = list(range(a, b + 1))
+
+            verts = [(a, 0), *zip(ix, iy), (b, 0)]
+            poly = Polygon(verts, facecolor="0.9", edgecolor="0.5")
+            ax.add_patch(poly)
+
+    plt.legend()
+    plt.show()
 
 
 file_path = r"path/to/data"
@@ -279,25 +299,18 @@ intervals = [[100, 600], [1000, 1500], [2360, 2966]]
 chroma_data = read_chromatogram(file_path, channel)
 print(chroma_data)
 
+# Visualizaing derivatives
 # plot_derivatives(chroma_data, same_plot="True", xlim=[0, 3000])
 
 # Find peaks in specified intervals
 peaks_data = peak_finder(chroma_data, intervals, image="None")
 
+# Find integration limits of peaks
 peaks_data = limits_finder(
-    chroma_data, peaks_data, intervals, min_slope=5, image="True"
+    chroma_data, peaks_data, intervals, min_slope=5, image="None"
 )
 
+# Integration of peaks
+peaks_data = peak_integration(chroma_data, peaks_data)
 
-# PEAK INTEGRATION
-# areas = []
-# limits = peaks_data["limits idx"].to_list()
-# for i, peak in enumerate(peaks_data):
-#  limit = limits[i]
-# integration_data = peaks_data[
-#     (peaks_data["index"] > limit[0]) & (peaks_data["index"] < limit[1])
-# ]
-# area = trapezoid(integration_data["Intensity"], integration_data["index"])
-# areas.insert(i, area)
-
-# print("Area are:", areas)
+plot_results(chroma_data, peaks_data, intervals)
