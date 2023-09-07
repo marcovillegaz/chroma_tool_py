@@ -12,56 +12,52 @@ example:
 # This program need to be rewrite defining functions
 
 import os
+import sys
 import pandas as pd
 
-# INPUT
-path = r"path/to/data"
 
 # ==============================================================================
-dir_list = os.listdir(path)  # name of files in directory
-# print("Files and directories in '", path, "' :")
-# print(dir_list)
+def main(path, index_number, new_tag):
+    dir_list = os.listdir(path)  # name of files in directory
 
-n = len(dir_list)  # number of files in folder
+    # Extract sample name
+    #   example: MV__21072023 M0_013 (10).csv
+    #                         ^^^^^^
+    sample_names = [None] * len(dir_list)
+    flag_name = " "  # This is for counting duplicated samples
+    for i, file_name in enumerate(dir_list):
+        print(file_name)
+        words = file_name.split()
+        sample_name = words[1]
+        # print(sample_name)
 
-# Extract sample name
-#   example: MV__21072023 M0_013 (10).csv
-#                         ^^^^^^
-sample_names = [None] * n
-for i in range(0, n):
-    old_name = dir_list[i]
-    words = old_name.split()
-    sample_names[i] = words[1]
+        new_sample_name = new_tag + sample_name[index_number]
 
-# Sort elements using data frames
-df_files = pd.DataFrame({"old_name": dir_list, "sample_names": sample_names})
-df_files = df_files.sort_values("sample_names")
-# print(df_files.to_string())
-old_names = df_files["old_name"].tolist()
-sample_names = df_files["sample_names"].tolist()
+        # Count duplicates
+        if new_sample_name == flag_name:
+            j = j + 1
+        else:
+            j = 1
 
-# Create list with new sample names
-flag_name = " "  # This is for counting duplicated samples
-new_names = [None] * n  # Preallocation
-for i in range(0, n):
-    sample = sample_names[i]
+        flag_name = new_sample_name
 
-    # Count duplicates
-    if sample[0:2] == flag_name:
-        j = j + 1
-    else:
-        j = 1
-    flag_name = sample[0:2]
+        new_sample_name = new_sample_name + " (" + str(j) + ").csv"
+        print(new_sample_name)
 
-    # Save new names in list
-    new_names[i] = sample[0:2] + "_0" + str(j) + ".csv"
+    """  # Loop for changing name in specified order
+    loop_path = path + "\{}"
+    for i in range(0, n):
+        # Creating old_name and new_name paths
+        new_name_path = loop_path.format(new_names[i])
+        old_name_path = loop_path.format(old_names[i])
+        # Rename chromatograms files
+        os.rename(old_name_path, new_name_path)
+        print(old_names[i], "\thas been renames as\t", new_names[i]) """
 
-# Loop for changing name in specified order
-loop_path = path + "\{}"
-for i in range(0, n):
-    # Creating old_name and new_name paths
-    new_name_path = loop_path.format(new_names[i])
-    old_name_path = loop_path.format(old_names[i])
-    # Rename chromatograms files
-    os.rename(old_name_path, new_name_path)
-    print(old_names[i], "\thas been renames as\t", new_names[i])
+
+if __name__ == "__main__":
+    print(sys.argv)
+    path = sys.argv[1]
+    index = int(sys.argv[2])
+    new_tag = sys.argv[3]
+    main(path, index, new_tag)

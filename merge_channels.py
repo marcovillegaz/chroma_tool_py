@@ -52,11 +52,11 @@ def merge_data(origin_path, channels, chroma_name, save_path="None"):
 
 def main(main_path):
     print("The program has been started".center(79, "="))
-    print(sys.argv)
+    print(sys.argv[:])
     ## Standard folder names. Can't be changed
     origin_folder = "original_data"
     out_data_folder = "merged_data"
-    out_image_folder = "chromatogram_plot"
+    out_image_folder = "images"
 
     origin_path = os.path.join(main_path, origin_folder)
 
@@ -65,7 +65,7 @@ def main(main_path):
     out_image_path = os.path.join(main_path, out_image_folder)
 
     os.mkdir(out_data_path)  # Create output data directory
-    # os.mkdir(out_image_path)  # Create output images directory
+    os.mkdir(out_image_path)  # Create output images directory
 
     print(os.path.join(main_path, origin_folder))
 
@@ -102,5 +102,5 @@ def main(main_path):
         #    channel_plot(chroma_data, show_time="True", save_path=image_path)
 
 
-if __name__ == "__main__":
-    main(sys.argv[1])
+# if __name__ == "__main__":
+# main(sys.argv)
