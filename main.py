@@ -11,17 +11,30 @@ class chromatogram:
 
     # This is a class attribute
     detector = "JASCO MD-4010"
+    all = []
 
-    def __init__(self, data, time, wavelength):
+    def __init__(self, path, name=None):
         # Run validation to reacive arguments
-        assert type(data) is np.ndarray, f"{data} must be a numpy array!"
-        assert type(time) is np.ndarray, f"{time} must be a numpy array!"
-        assert type(wavelength) is np.ndarray, f"{wavelength} must be a numpy array!"
+        assert type(path) is str, f"{path} must be a string!"
 
-        # This are instance attributes
+        # Extract PDA information from text file
+        data, time, wavelength = open_pda(path)
+
+        # Assign to self object (instance attributes)
         self.data = data
         self.time = time  # [t_0,t_f]
         self.wavelength = wavelength  # [wl_0,wl_f]
+
+        if name == None:
+            path_list = path.split("\\")
+            name_list = path_list[-1].split(".")
+            self.name = name_list[0]
+
+        # Action to execute
+        chromatogram.all.append(self)
+
+    def __repr__(self) -> str:
+        return f"chroma('{self.name}')"
 
     def description(self):
         print(
@@ -45,7 +58,7 @@ class chromatogram:
         # Rearrengning data
         time_array = np.linspace(self.time[0], self.time[1], self.data.shape[0])
         wavelength_array = np.linspace(
-            self.wavelength[0], self.wavelength[1], data.shape[1]
+            self.wavelength[0], self.wavelength[1], self.data.shape[1]
         )
 
         X, Y = np.meshgrid(time_array, wavelength_array)
@@ -75,14 +88,14 @@ class chromatogram:
 
         # Set the limits of the x and y axes
         if x_min == None:
-            x_min = min(time)
+            x_min = min(time_array)
         if x_max == None:
-            x_max = max(time)
+            x_max = max(time_array)
 
         if y_min == None:
-            y_min = min(wavelength)
+            y_min = min(wavelength_array)
         if y_max == None:
-            y_max = max(wavelength)
+            y_max = max(wavelength_array)
 
         ax.set_xlim([x_min, x_max])
         ax.set_ylim([y_min, y_max])
@@ -99,21 +112,21 @@ class chromatogram:
             plt.show()
 
 
-# Extraction chromatogram information from text file
-data, time, wavelength = open_pda(path)
 # assign and instance to the corresponding information
-chroma1 = chromatogram(data, time, wavelength)
+chroma1 = chromatogram(
+    r"path/to/data"
+)
+chroma2 = chromatogram(
+    r"path/to/data"
+)
 
-# Difference between class and instance attributes
-print(chroma1.__dict__)
-print(chromatogram.__dict__)
+for instance in chromatogram.all:
+    print(instance)
+    print(instance.name)
 
 # Show chromatogram description
 chroma1.description()  # class attribute
 
-chroma1.detector = "FP-4025"  # assign instance attribute
-chroma1.description()
-
-
-# Plot chromatogram data is surface
-chroma1.pda_plot()
+# Plot chromatogram data as surface
+# chroma1.pda_plot()
+# chroma2.pda_plot()
