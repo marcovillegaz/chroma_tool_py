@@ -47,8 +47,6 @@ def merge_data(origin_path, channels, chroma_name, save_path="None"):
             index=False,
         )
 
-    return chroma_data
-
 
 def main(main_path):
     print("The program has been started".center(79, "="))
@@ -84,18 +82,12 @@ def main(main_path):
         i = i + 1
 
         # Get chromatogram name without extention
-        chroma_name = chroma_name.split(".")
-        chroma_name = chroma_name[0]
+        # chroma_name = chroma_name.split(".")
+        # chroma_name = chroma_name[0]
         print(counter.format(str(i)), "Merging data from chromatogram", chroma_name)
 
         # Merge multichannel data
-        chroma_data = merge_data(
-            origin_path, channels, chroma_name, save_path=out_data_path
-        )
-
-        # if image == "True":
-        #    image_path = os.path.join(out_image_path, chroma_name + ".png")
-        #    channel_plot(chroma_data, show_time="True", save_path=image_path)
+        merge_data(origin_path, channels, chroma_name, save_path=out_data_path)
 
 
 if __name__ == "__main__":

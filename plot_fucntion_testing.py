@@ -88,17 +88,18 @@ save_path = r"path/to/data"
 # Plot between -10 and 10 with .001 steps.
 x1 = np.arange(0, 100, 0.01)
 
-y1 = norm.pdf(x1, 25, 0.5)
-y2 = norm.pdf(x1, 40, 2)
-y3 = norm.pdf(x1, 50, 0.8)
+y1 = norm.pdf(x1, 30, 1)
+y2 = norm.pdf(x1, 40, 4)
+y3 = norm.pdf(x1, 45, 0.8)
 y4 = norm.pdf(x1, 75, 1.3)
 
 
 data = {
-    "prueba1": np.array([x1, y1]),
-    "prueba2": np.array([x1, y2]),
-    "prueba3": np.array([x1, y3]),
-    "prueba4": np.array([x1, y4]),
+    # "prueba1": np.array([x1, y1]),
+    # "prueba2": np.array([x1, y2]),
+    # "prueba3": np.array([x1, y3]),
+    # "prueba4": np.array([x1, y4]),
+    "prueba5": np.array([x1, y1 + y2 + y3]),
 }
 print(data)
 

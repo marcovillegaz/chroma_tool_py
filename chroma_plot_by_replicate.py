@@ -11,14 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def read_chromatogram(file_path):
-    # This function opens a csv file that contains the chromatogram data and
-    # return the data as numpy arrays.
-    # Input:
-    #   filename: path of the correpsonding csv file
-    # Output:
-    #   x: array of time (or number of data)
-    #   y: intensity of signal
+def read_chromatogram(file_path, channel):
+    """This function read chromatogram merged data and extract only the selected channel"""
 
     print("\tOpening", file_path)
     # Reading .csv file with chromatogram data

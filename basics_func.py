@@ -113,3 +113,7 @@ def plot_peaks(chroma_df, time, peaks_df, peaks_name="None"):
     plt.xticks(np.arange(time[0], time[-1], step=1))
     plt.legend()
     plt.show()
+
+def extract_spectrum(PDA_data,peak_index):
+    """This function extract the spectrum a a peak"""
+    spectrum = PDA_data[peak_index,:]
