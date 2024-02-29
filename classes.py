@@ -2,8 +2,6 @@ from plot_funcs import open_pda
 import matplotlib.pyplot as plt
 import numpy as np
 
-path = r"path/to/data"
-
 
 # Methods: function of a class
 # Atributtes: constants of a class
@@ -13,32 +11,96 @@ class chromatogram:
     detector = "JASCO MD-4010"
     all = []
 
-    def __init__(self, path, name=None):
+    def __init__(self, name, data, time, wavelength):
         # Run validation to reacive arguments
-        assert type(path) is str, f"{path} must be a string!"
-
-        # Extract PDA information from text file
-        data, time, wavelength = open_pda(path)
+        assert type(name) is str, f"{name} must be a string!"
+        assert type(data) is np.ndarray, f"{data} must be a numpy.array!"
+        assert type(time) is np.ndarray, f"{time} must be a numpy.array!"
+        assert type(wavelength) is np.ndarray, f"{wavelength} must be a numpy.array!"
 
         # Assign to self object (instance attributes)
+        self.name = name
         self.data = data
         self.time = time  # [t_0,t_f]
         self.wavelength = wavelength  # [wl_0,wl_f]
 
-        if name == None:
-            path_list = path.split("\\")
-            name_list = path_list[-1].split(".")
-            self.name = name_list[0]
-
         # Action to execute
         chromatogram.all.append(self)
 
+    # Return an unambiguous string representation of the object
     def __repr__(self) -> str:
-        return f"chroma('{self.name}')"
+        return f"chromatogram('{self.name}')"
+
+    ######################## CLASS METHODS ####################################
+    @classmethod  # This is a decorator
+    def open_single_pda(cls, file_path):
+        """This class method opnes a single PDA file and create an instance using
+        that data."""
+
+        print("Openning PDA file...")
+
+        # Open the .txt file
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+
+        # Extract PDA information in .txt file (depend of HPLC software)
+        PDA_data = []
+        PDA_info = []
+        for i, line in enumerate(lines):
+            if i < 11:
+                PDA_info.append(line)
+            elif i > 11:
+                row = list(map(int, line.split()))
+                PDA_data.append(row)
+
+        PDA_data = np.array(PDA_data)
+
+        # Extract PDA info and save in dictionary
+        data_dict = {}
+        for item in PDA_info:
+            item = item.replace("\n", "")
+            item = item.replace(",", ".")
+            key, value = item.split("\t")
+            data_dict[key] = value
+
+        # Extract chromatogram name from filename
+        path_list = file_path.split("\\")
+        name_list = path_list[-1].split(".")
+
+        # Start and end time
+        time = np.array(
+            [
+                float(data_dict["START_TIME"].replace("min", "")),
+                float(data_dict["END_TIME"].replace("min", "")),
+            ]
+        )
+        # Start and end wavelength
+        wavelength = np.array(
+            [
+                float(data_dict["START_WL"].replace("nm", "")),
+                float(data_dict["END_WL"].replace("nm", "")),
+            ]
+        )
+
+        # Create the instance (important to return)
+        return cls(
+            name=name_list[0],
+            data=PDA_data,
+            time=time,
+            wavelength=wavelength,
+        )
+
+    @classmethod
+    def open_multiple_pda(cls, folder_path):
+        """This class method open multiple PDA files stored in a folder"""
+
+    @staticmethod
+    def hola(self):
+        print("Hola Ass")
 
     def description(self):
         print(
-            f"The chromatogram data was obtained in a {chromatogram.detector} detector\n"
+            f"The data from '{self.name}' was obtained in a {chromatogram.detector} detector\n"
         )
 
     def pda_plot(
@@ -110,23 +172,3 @@ class chromatogram:
             plt.savefig(save_path)
         else:
             plt.show()
-
-
-# assign and instance to the corresponding information
-chroma1 = chromatogram(
-    r"path/to/data"
-)
-chroma2 = chromatogram(
-    r"path/to/data"
-)
-
-for instance in chromatogram.all:
-    print(instance)
-    print(instance.name)
-
-# Show chromatogram description
-chroma1.description()  # class attribute
-
-# Plot chromatogram data as surface
-# chroma1.pda_plot()
-# chroma2.pda_plot()
