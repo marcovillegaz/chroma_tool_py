@@ -2,3 +2,4 @@ venv/
 .vscode/
 GWR_project/
 Images/
+__pycache__/
