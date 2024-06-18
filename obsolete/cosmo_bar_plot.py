@@ -23,7 +23,7 @@ def cosmos_screening(file_path, save_path="None"):
     ax.set_xlabel("Polymers")
     ax.set_ylabel(r"$Ln(\gamma)$")
     ax.set_title("Grouped Bar Plot of $Ln(\gamma)$ for Each Polymer")
-    ax.set_ylim([-15, 15])
+    ax.set_ylim([-10, 10])
     ax.grid(linewidth=0.5)
 
     # Annotate each bar with its numeric value
