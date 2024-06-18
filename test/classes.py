@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from utils.peaks import *
+from utils.peak_finder import *
 from plots.plot_peaks import *
 
 

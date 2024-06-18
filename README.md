@@ -1,6 +1,20 @@
 # HPLC-signal-processng
 
 
+## Classes
+chromatogram.py
+
+analyte.py
+
+
+
+## utils.excel
+Utility function to work with HPLC data in excel files.
+
+
+
+
+
 ## Order of the scripts.
 
 In chromatography a private softaware (Usually develop by the brand) is use for
