@@ -7,37 +7,50 @@ import os
 import pandas as pd
 
 
-def merge_files(filepath, filenames, extract_cols):
-    """This function open the single channels files and return the data in
-    a single dataframe
-    input:
-        filepath: folder where the ChromNAV outpur are stored.
-        filenames: names of the xls file (without extension).
-        extract_cols: columns where important data are.
-    output:
-        appended_df: dataframe with appended data.
+def merge_files(folder_path, extract_cols):
     """
+    Merge the single channel peak information into a single dataframe.
 
+    params:
+        folder_path: folder where the ChromNAV single channel info are stored.
+        extract_cols: column with the information you want to extract.
+    return:
+        appended_df: dataframe with appended data.
+
+    Description:
+
+    The name of the files stored in folder_path must agree with the channel
+    names. e.g. CH1.xlsx, CH2.xlsx, CH9.xlsx
+    """
+    print(f"Files stored in '{folder_path}' were being merged into a single DataFrame")
     appended_df = pd.DataFrame()
 
     # Loop by file
-    for i, filename in enumerate(filenames):
-        print(f"openning {filename}.xls file")
-
+    for filename in os.listdir(folder_path):
+        print(f"\tOpenning {filename}")
         # Read excel file
-        raw_df = pd.read_excel(io=os.path.join(filepath, filename + ".xls"))
+        raw_df = pd.read_excel(io=os.path.join(folder_path, filename))
         # Filter by important columns
         filter_df = raw_df[extract_cols]
-
         # Remove last three numbers in Chromatogram_name (For ChromNav software)
         filter_df.loc[:, "Chromatogram Name"] = filter_df["Chromatogram Name"].str[:-4]
-
         # Append dataframes
         appended_df = pd.concat([appended_df, filter_df], ignore_index=True)
 
     # Extract numeric part from "name" column and convert to integers
     appended_df["Sample Number"] = (
         appended_df["Chromatogram Name"].str.extract("(\d+)").astype(int)
+    )
+
+    # Change columns name.
+    appended_df.rename(
+        columns={
+            "Chromatogram Name": "CHROMATOGRAM NAME",
+            "CH": "CHANNEL",
+            "Peak Name": "ANALITE",
+            "Area": "AREA",
+        },
+        inplace=True,
     )
 
     return appended_df
