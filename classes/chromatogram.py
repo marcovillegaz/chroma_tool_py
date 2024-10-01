@@ -1,13 +1,12 @@
 import numpy as np
-
-from utils.peak_finder import peak_finder
+import pandas as pd
 
 
 class Chromatogram:
     # This is a class attribute
     all = []
 
-    def __init__(self, NAME, INFO, PDA_DATA=None, FV_DATA=None):
+    def __init__(self, NAME, INFO, PDA_DATA=None, FL_DATA=None):
         # Run validation to reacive arguments
         assert type(NAME) is str, f"{NAME} must be a string!"
 
@@ -15,6 +14,7 @@ class Chromatogram:
         self.NAME = NAME
         self.INFO = INFO
         self.PDA_DATA = PDA_DATA
+        self.FL_DATA = {}
 
         # Action to execute
         Chromatogram.all.append(self)
@@ -33,6 +33,9 @@ class Chromatogram:
 
         # Create the instance (important to return)
         return cls(name=filename[0])
+
+    # @classmethod
+    # def create from FL() Develop this method.
 
     @classmethod
     def create_from_pda(cls, file_path, detector=None):
@@ -69,7 +72,7 @@ class Chromatogram:
             key, value = item.split("\t")
             info_dict[key] = value
 
-        # CHromatogram name
+        # Chromatogram name
         path_list = file_path.split("\\")
         name_list = path_list[-1].split(".")
 
@@ -80,18 +83,22 @@ class Chromatogram:
             PDA_DATA=data,
         )
 
-    def find_peaks(self, wavelength, show=None):
-        """This function find de corresponding peaks in single wavelength
-        chromatogram (Time vs Intensity)"""
+    def add_FL(self, file_path, channel):
+        """This method add the data obtained in a fluorescence detector, which
+        is stored in csv file (time vs intensity)
 
-        print("Peak identification".center(50, "="))
+        params:
+        file_path(str): path of the csv file contianign data point.
+        channel(str): channel name to store in FL attribute. In ChromNAV, FL
+        data points are exported by single channels."""
 
-        time_array, intensity_2d = Extract_SingleWavelength(self.PDA_data, wavelength)
-        peaks_data = peak_finder(intensity_2d, time_array)
+        # Read csv file
+        df = pd.read_csv(file_path, sep=";", decimal=",")
+        # Define FL dictionary
+        FL_dict = {}
+        FL_dict["time"] = df["min"].to_numpy()
+        FL_dict[channel] = df["Intensity"].to_numpy()
+        # Assignt to FL_data attribute
+        self.FL_DATA = FL_dict
 
-        print(f"Peaks identified in chromatogram at {wavelength}nm:\n", peaks_data)
-
-        if show == True:
-            plot_results(intensity_2d, time_array, peaks_data)
-
-        return peaks_data
+    # def add_PDA()  (DEVELOP THIS METHOD)

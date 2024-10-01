@@ -1,5 +1,6 @@
 """This script contain function to plot PDA data in different ways"""
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -37,7 +38,7 @@ def pda_contour(
     Z = np.clip(Z, z_min, z_max)
 
     # Create contour plot
-    fig, ax = plt.subplots(figsize=(12, 4))
+    fig, ax = plt.subplots(figsize=(10, 4))
     cs = ax.contourf(
         X,
         Y,
@@ -57,6 +58,7 @@ def pda_contour(
 
     if y_min == None:
         y_min = min(wavelength)
+    if y_max == None:
         y_max = max(wavelength)
 
     ax.set_xlim([x_min, x_max])
@@ -64,13 +66,15 @@ def pda_contour(
     cs.set_clim(vmin=z_min, vmax=z_max)
 
     fig.colorbar(cs)  # color bar
+    plt.tight_layout()
     plt.gca().invert_yaxis()
     # plt.subplots_adjust(left=0.2, right=0.8, bottom=0.0, top=1.1) # MODIFY
 
     # Save the plot if a save path is provided
     if save_path != None:
-        print("\tSaving image in " + save_path)
-        plt.savefig(save_path)
+        file_name = os.path.join(save_path, cls.NAME)
+        print("\tSaving " + file_name)
+        plt.savefig(file_name, dpi=800)
     else:
         plt.show()
 
@@ -137,11 +141,12 @@ def pda_spectrum(cls, time_list):
             print(f"¡{time}min is not in range!")
         else:
             intensity = extract.by_time(cls, time)
+            intensity = 100 * intensity / np.max(intensity)
             ax.plot(wavelength, intensity, label=str(time) + "min")
 
     # Get and set limits
     ax.set_xlim(xmin=wavelength[0], xmax=wavelength[-1])
-    ax.set_ylabel("Intensity")
+    ax.set_ylabel("Normalized Intensity")
     ax.set_xlabel("Wavelength [nm]")
 
     ax.grid()

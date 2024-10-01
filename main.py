@@ -17,7 +17,7 @@ for instance in Chromatogram.all:
 
 # chroma_plot.pda_contour(chroma1, z_min=-1000)  # chdisp.pda_contour
 # chroma_plot.pda_2d(chroma1, wl_list=[275, 300, 365, 25])  # chdisp.pda_2d
-chroma_plot.pda_spectrum(chroma1, time_list=[5.42])
+chroma_plot.pda_spectrum(chroma1, time_list=[4.5, 5, 5.5])
 #
 
 """ # preliminar peak analysis

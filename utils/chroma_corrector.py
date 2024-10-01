@@ -99,7 +99,7 @@ def main(main_path):
         #        print("old_data\n", old_chroma_data)
         #       print("new_data\n", new_chroma_data)
 
-        chroma_plot(old_chroma_data, beads_chroma_data, mv:)
+        chroma_plot(old_chroma_data, beads_chroma_data)
 
         print("\tyes: overwarite data corrected with BEAD algorithm")
         print("\tno: don't apply any correction")

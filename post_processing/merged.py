@@ -56,6 +56,7 @@ def merge_files(folder_path, extract_cols):
     return appended_df
 
 
+# OBSOLETE
 def merged2excel(merged_df, filepath, filename):
     """This function takes the merged dataframe and create and excel spreadsheet
     where each sheet correspond to a single analyte.

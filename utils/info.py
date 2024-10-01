@@ -25,7 +25,7 @@ def time(CHROMA_INFO):
 
 
 def wavelenth(CHROMA_INFO):
-    """Create the time array that would be useful for data processing
+    """Create the wavelength array that would be useful for data processing
 
     Args:
         CHROMA_INFO (dict): Information of the chromatogram
