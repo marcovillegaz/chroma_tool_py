@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from basics_func import Extract_SingleWavelength, peak_finder, plot_peaks
+from obsolete.basics_func import Extract_SingleWavelength, peak_finder, plot_peaks
 
 
 def open_PDA(file_path):
@@ -109,7 +109,7 @@ def plot_pda(
 
     fig.colorbar(cs)  # color bar
     plt.gca().invert_yaxis()
-    
+
     # Save the plot if a save path is provided
     if save_path != "None":
         plt.savefig(save_path)

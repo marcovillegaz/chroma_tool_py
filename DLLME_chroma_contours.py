@@ -1,8 +1,9 @@
 import os
 
 from classes.chromatogram import Chromatogram
-from classes.analyte import Analyte
 from chroma_display import chroma_plot
+
+import matplotlib.pyplot as plt
 
 folder = "DLLLME_Chromatograms"
 files = os.listdir(folder)
@@ -13,7 +14,6 @@ print(files)
 chromatograms = [
     Chromatogram.create_from_pda(os.path.join(folder, file)) for file in files[0:3]
 ]
-
 
 # Print the created Chromatogram instances
 for chromatogram in chromatograms:
