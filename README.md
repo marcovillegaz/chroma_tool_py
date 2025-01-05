@@ -1,4 +1,4 @@
-# ChromaToolPy - A Python Toolbox to Work with Chromatogram Data
+# ChromaToolPy - A Python Toolbox to Work with Chromatogram Dataa
 
 ![ChromatoPy Logo](Images/logo.png)  <!-- You can add a logo or image here -->
 
