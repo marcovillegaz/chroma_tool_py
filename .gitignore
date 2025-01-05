@@ -6,3 +6,4 @@ __pycache__/
 TASKS.md
 OOP.md
 .pyc
+orders/client_data/
