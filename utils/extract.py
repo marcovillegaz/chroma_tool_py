@@ -114,3 +114,36 @@ def by_time(cls, time):
         )
 
     return intensity
+
+
+def clip_pda(
+    x,
+    y,
+    z,
+    x_lim,
+    y_lim,
+):
+    """Clip your data based on your axis limits.
+    This helps not plot inacessary information
+
+    Args:
+        x (np.array): time array
+        y (np.array): wavelength array
+        z (np.array): intensity with shape (len(x),len(y))
+        x_lim (tuple): min and max of x
+        y_lim (tuple): min and max of y
+
+    Returns:
+        x_clipped, y_clipped, z_clipped: clipped version of the same information
+    """
+
+    # Clip the time and wavelength arrays
+    x_mask = (x >= x_lim[0]) & (x <= x_lim[1])
+    y_mask = (y >= y_lim[0]) & (y <= y_lim[1])
+
+    # Apply masks to clip X, Y, and Z
+    x_clipped = x[x_mask]
+    y_clipped = y[y_mask]
+    z_clipped = z[x_mask, :][:, y_mask]
+
+    return x_clipped, y_clipped, z_clipped
