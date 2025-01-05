@@ -1,8 +1,8 @@
-# ChromatoPy - A Python Package for Chromatogram Data Processing
+# ChromaToolPy - A Python Toolbox to Work with Chromatogram Data
 
 ![ChromatoPy Logo](Images/logo.png)  <!-- You can add a logo or image here -->
 
-`ChromatoPy` is a Python package designed to facilitate the analysis, processing, and visualization of chromatogram data. It provides tools for peak detection, baseline correction, integration, and more, to streamline chromatographic analysis workflows.
+`ChromaToolPy` is a Python package designed to facilitate the analysis, processing, and visualization of chromatogram data. It provides tools for peak detection, baseline correction, integration, and more, to streamline chromatographic analysis workflows.
 
 ## Features
 
