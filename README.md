@@ -1,5 +1,21 @@
+# ChromatoPy - A Python Package for Chromatogram Data Processing
+
+![ChromatoPy Logo](Images/logo.png)  <!-- You can add a logo or image here -->
+
+`ChromatoPy` is a Python package designed to facilitate the analysis, processing, and visualization of chromatogram data. It provides tools for peak detection, baseline correction, integration, and more, to streamline chromatographic analysis workflows.
+
+## Features
+
+- Peak detection and characterization
+- Baseline correction and normalization
+- Integration of chromatographic peaks
+- Visualization of chromatograms and results
+- Data export for further analysis
+
+
+
 # HPLC-signal-processng
-This repository has usefull classes and methods for processing chromatogram data. All the scripts are based in the extractaed information from JASCO's ChromNAV software
+This repository has usefull classes and methods for processing chromatogram data. All the scripts are based in the extractaed information from JASCO's ChromNAV software. The codes can be modified to process other type of information if it is in .txt
 
 ## Classes
 ### **Chromatogram** 
@@ -41,3 +57,13 @@ others). The advantages of python is to procces a great quantity of chromat
     This program can plot multiple chromatogram with many options. 
 
 6. **cosmo_bar_plot.py** create a bar plot grouping the analytes by polymer tested, in order to compare the Ln(y). 
+
+
+
+# chroma_display.py
+
+chroma_plot.py contains function for different typo of visualizazarion of
+chromatgram data. 
+
+pda_contour(cls): Create contour plot from pda data (READY)
+pda_2d(cls): Create a 2D chromatogram from your 3D PDA data  (READY)
