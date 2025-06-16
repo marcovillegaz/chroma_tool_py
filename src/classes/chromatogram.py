@@ -74,11 +74,13 @@ class Chromatogram:
 
         # Chromatogram name
         path_list = file_path.split("\\")
-        name_list = path_list[-1].split(".")
+        name = path_list[-1].removesuffix(".txt")
+        name = name.removesuffix(" (PDA)")
+        print(name)
 
         # Instanciate object
         return cls(
-            NAME=name_list[0],
+            NAME=name,
             INFO=info_dict,
             PDA_DATA=data,
         )

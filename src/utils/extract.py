@@ -2,12 +2,12 @@
 
 In PDA detectors de Intensity id function of time and wavelength
     Itensity = f(time,wavelength)
-    """
+"""
 
 import numpy as np
 import pandas as pd
 
-from utils import info
+from src.utils import info
 
 
 # maybe put this function in other place

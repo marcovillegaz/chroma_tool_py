@@ -4,15 +4,15 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils import info
-from utils import extract
-from utils.extract import clip_pda
+from src.utils import info
+from src.utils import extract
+from src.utils.extract import clip_pda
 
 
 # PLOT 2D
 def pda_2d(
     cls,
-    wl_list,
+    wavelengths,
     save_path=None,
 ):
     """Create a 2D chromatogram from your 3D PDA data
@@ -35,7 +35,7 @@ def pda_2d(
     fig, ax = plt.subplots(figsize=(10, 7))
 
     # Extract data of wavelength in list and plot them
-    for wl in wl_list:
+    for wl in wavelengths:
         if wl <= wavelength[0] or wl >= wavelength[-1]:
             print(f"¡{wl}nm is not in range!")
         else:
@@ -91,6 +91,45 @@ def pda_spectrum(cls, time_list):
     ax.grid()
     ax.legend()
     plt.show()
+
+
+def fl_plot(cls, save_path=None):
+    """Create a 2D chromatogram from your fluorescence data
+
+    This function takes the intensity of information for given wavelegenth to
+    create a time vs intensity plot.
+
+    Args:
+        cls (chromaotgram instance)  : instance of Chromatogram class
+    """
+
+    print(f"Generating FL chromatograms from {cls.NAME} data")
+
+    # Extract information necesarry to plot
+    time = info.time(cls.INFO)
+    fl_data = cls.FL_DATA
+
+    # Create figure and axes
+    fig, ax = plt.subplots(figsize=(10, 7))
+
+    # Plot the fluorescence data
+    ax.plot(time, fl_data[f"CH{channel}"], label=f"Channel {channel}")
+
+    # Get and set limits
+    ax.set_xlim(xmin=time[0], xmax=time[-1])
+    ax.set_ylabel("Intensity")
+    ax.set_xlabel("Time [min]")
+
+    # ax.grid() # optional
+    ax.legend()
+
+    # Save the plot if a save path is provided
+    if save_path != None:
+        file_name = os.path.join(save_path, cls.NAME + "_FL.png")
+        print("\tSaving " + file_name)
+        plt.savefig(file_name, dpi=800)
+    else:
+        plt.show()
 
 
 # PLOT 3D
