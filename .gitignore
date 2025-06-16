@@ -7,3 +7,5 @@ OOP.md
 .pyc
 orders/client_data/
 .env
+
+data/client_images/
