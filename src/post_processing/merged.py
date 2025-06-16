@@ -1,6 +1,6 @@
 """In ChromNAV you can extract your peak info in an excel file by channels. For
 further analysis, this script extract the important info (ex. peak area, peak name,
-etc.) and merged them in a single excel file, where each sheet correspond to a 
+etc.) and merged them in a single excel file, where each sheet correspond to a
 single analyte, this facilitates the calibration curve analysis."""
 
 import os
@@ -38,13 +38,14 @@ def merge_files(folder_path, extract_cols):
         appended_df = pd.concat([appended_df, filter_df], ignore_index=True)
 
     # Extract numeric part from "name" column and convert to integers
-    appended_df["Sample Number"] = (
+    appended_df["SAMPLE NUMBER"] = (
         appended_df["Chromatogram Name"].str.extract("(\d+)").astype(int)
     )
 
     # Change columns name.
     appended_df.rename(
         columns={
+            "Acquisition Date": "ACQUISITION DATE",
             "Chromatogram Name": "CHROMATOGRAM NAME",
             "CH": "CHANNEL",
             "Peak Name": "ANALITE",

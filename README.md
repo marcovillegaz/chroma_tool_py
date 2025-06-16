@@ -6,12 +6,12 @@
 
 ## Features
 
+- Easy workflow employing classes
 - Peak detection and characterization
 - Baseline correction and normalization
 - Integration of chromatographic peaks
 - Visualization of chromatograms and results
 - Data export for further analysis
-
 
 
 # HPLC-signal-processng
@@ -26,8 +26,23 @@ An instance of a Analyte class is an object that characterized a corresponding a
 
 * Create spectra library attribute. 
 
-## Process peak information
-When integrating peaks using ChromaNAV software, you can extract an excel file with the peak information ordered by channels in singles files. For example, CH1.xlsx store all the peaks 
+## Process ChromaNav peak information
+When integrating peaks using ChromaNAV software, you can extract an excel file with the peak information ordered by channels in singles files. For example, CH1.xlsx store all the peaks in channel 1. 
+
+### process_chromnav_batch.py (working)
+take the chroman files rearrangen them as dataframe and load into and existing database, in this case a table. 
+
+### merge_calibration_curve.py
+Take a batch of chromnav files and merged the peak info with the concentration of each analites in each point. The scripts return an excel file where each sheet correspond to an analite. Then you can perform manaual analisis of the calibration curves. 
+
+
+
+
+
+
+
+
+
 
 
 ## post_processing

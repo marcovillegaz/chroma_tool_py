@@ -1,4 +1,4 @@
-"""Thhis script generates a plot of the corresponding chromatograms for the 
+"""Thhis script generates a plot of the corresponding chromatograms for the
 sample analysis of HG."""
 
 import os
@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 import pandas as pd
 
-from utils import extract, info
-from utils.peak_finder import peak_finder
+from src.utils import extract, info
+from src.utils.peak_finder import peak_finder
 
-from classes.chromatogram import Chromatogram
-from chroma_display import chroma_plot
+from src.classes.chromatogram import Chromatogram
+from src.chroma_display import chroma_plot
 
 
 # file of the chromatogram with the 10 analytes

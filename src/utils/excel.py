@@ -1,5 +1,5 @@
 """In ChromNAV you can extract your peak info in an excel file by channels. For
-further analysis. In this script there are utility function to process 
+further analysis. In this script there are utility function to process
 data extracted from ChromNav"""
 
 import os
