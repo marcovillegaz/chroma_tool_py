@@ -11,7 +11,7 @@ from src.utils import extract, info
 from src.utils.peak_finder import peak_finder
 
 from src.classes.chromatogram import Chromatogram
-from src.chroma_display import chroma_plot
+from src.display import chroma_plot
 
 
 # file of the chromatogram with the 10 analytes

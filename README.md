@@ -1,4 +1,4 @@
-# ChromaToolPy - A Python Toolbox to Work with Chromatogram Dataa
+# ChromaToolPy - A Python Toolbox to Work with Chromatogram Data
 
 ![ChromatoPy Logo](Images/logo.png)  <!-- You can add a logo or image here -->
 
@@ -12,7 +12,6 @@
 - Integration of chromatographic peaks
 - Visualization of chromatograms and results
 - Data export for further analysis
-
 
 # HPLC-signal-processng
 This repository has usefull classes and methods for processing chromatogram data. All the scripts are based in the extractaed information from JASCO's ChromNAV software. The codes can be modified to process other type of information if it is in .txt

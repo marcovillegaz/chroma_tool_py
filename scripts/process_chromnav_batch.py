@@ -3,8 +3,8 @@
 import os
 import shutil
 
-from src.post_processing.merged import *
-from src.post_processing.data_base import *
+from src.io.merge_channels import *
+from src.io.update_excel_db import *
 
 
 # Important information to be extracted, columns
