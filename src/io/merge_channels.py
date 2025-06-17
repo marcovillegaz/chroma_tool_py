@@ -55,27 +55,3 @@ def merge_files(folder_path, extract_cols):
     )
 
     return appended_df
-
-
-# OBSOLETE
-def merged2excel(merged_df, filepath, filename):
-    """This function takes the merged dataframe and create and excel spreadsheet
-    where each sheet correspond to a single analyte.
-
-    input:
-        merged_df: dataframe where all the peak information is stored.
-        filepath: output folder.
-        filename: name of the output file."""
-
-    print("Writing output excel with merged files.")
-
-    # Create an ExcelWriter object
-    with pd.ExcelWriter(os.path.join(filepath, filename + ".xlsx")) as writer:
-
-        # Group the DataFrame by the 'Peak Name' column
-        for name, group_df in merged_df.groupby("Peak Name"):
-            # Sort data
-            group_df = group_df.sort_values(by="Sample Number")
-            group_df = group_df.sort_values(by="CH")
-            # write excel sheet
-            group_df.to_excel(writer, sheet_name=name, index=False)
