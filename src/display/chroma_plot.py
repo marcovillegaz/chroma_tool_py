@@ -25,7 +25,7 @@ def pda_2d(
         wavelength (list)       : list of wevelength (nm) to plot
     """
 
-    print(f"Generating 2D chromatograms from {cls.NAME} data")
+    print(f"\tGenerating 2D chromatograms from {cls.NAME} data")
 
     # Extract information necesarry to plot
     time = info.time(cls.INFO)
@@ -51,10 +51,11 @@ def pda_2d(
     ax.legend()
 
     # Save the plot if a save path is provided
-    if save_path != None:
+    if save_path is not None:
         file_name = os.path.join(save_path, cls.NAME + "_2d.png")
         print("\tSaving " + file_name)
         plt.savefig(file_name, dpi=800)
+        plt.close(fig)
     else:
         plt.show()
 
@@ -91,6 +92,7 @@ def pda_spectrum(cls, time_list):
     ax.grid()
     ax.legend()
     plt.show()
+    plt.close(fig)
 
 
 def fl_plot(cls, save_path=None):
@@ -103,20 +105,18 @@ def fl_plot(cls, save_path=None):
         cls (chromaotgram instance)  : instance of Chromatogram class
     """
 
-    print(f"Generating FL chromatograms from {cls.NAME} data")
+    print(f"\tGenerating FL chromatograms from {cls.NAME} data")
 
     # Extract information necesarry to plot
-    time = info.time(cls.INFO)
     fl_data = cls.FL_DATA
 
     # Create figure and axes
     fig, ax = plt.subplots(figsize=(10, 7))
-
     # Plot the fluorescence data
-    ax.plot(time, fl_data[f"CH{channel}"], label=f"Channel {channel}")
+    ax.plot(fl_data["Time"], fl_data["Intensity"], label="Fluorescence")
 
     # Get and set limits
-    ax.set_xlim(xmin=time[0], xmax=time[-1])
+    ax.set_xlim(fl_data["Time"].iloc[0], fl_data["Time"].iloc[-1])
     ax.set_ylabel("Intensity")
     ax.set_xlabel("Time [min]")
 
@@ -124,10 +124,11 @@ def fl_plot(cls, save_path=None):
     ax.legend()
 
     # Save the plot if a save path is provided
-    if save_path != None:
+    if save_path is not None:
         file_name = os.path.join(save_path, cls.NAME + "_FL.png")
         print("\tSaving " + file_name)
         plt.savefig(file_name, dpi=800)
+        plt.close(fig)
     else:
         plt.show()
 
@@ -155,7 +156,7 @@ def pda_contour(
         save_path (str): folder where figure will be saved.
     """
 
-    print(f"Generating PDA contour from {cls.NAME} data")
+    print(f"\tGenerating PDA contour from {cls.NAME} data")
 
     # EXTRACT DATA FROM OBJECT
     x = info.time(cls.INFO)  # time
@@ -164,19 +165,19 @@ def pda_contour(
 
     # CLIP DATA BASED IN LIMITS GIVEN BY USER (optional)
     ## Set the limits of the x, y a z
-    if x_min == None:
+    if x_min is None:
         x_min = min(x)
-    if x_max == None:
+    if x_max is None:
         x_max = max(x)
 
-    if y_min == None:
+    if y_min is None:
         y_min = min(y)
-    if y_max == None:
+    if y_max is None:
         y_max = max(y)
 
-    if z_min == None:
+    if z_min is None:
         z_min = z.min()
-    if z_max == None:
+    if z_max is None:
         z_max = z.max()
 
     ## Clip the data based on max an min
@@ -201,7 +202,7 @@ def pda_contour(
         Y,
         Z,
         levels=np.linspace(z_min, z_max, lvls),
-        cmap=plt.cm.rainbow,
+        cmap="rainbow",
     )
 
     ## Plot adjustments
@@ -214,10 +215,11 @@ def pda_contour(
     plt.tight_layout()  # tight loyout
 
     # Save the plot if a save path is provided
-    if save_path != None:
+    if save_path is not None:
         file_name = os.path.join(save_path, cls.NAME + "_PDA.png")
         print("\tSaving " + file_name)
         plt.savefig(file_name, dpi=800)
+        plt.close(fig)
     else:
         plt.show()
 
@@ -255,14 +257,14 @@ def pda_surface(
 
     # CLIP DATA BASED IN LIMITS GIVEN BY USER (optional)
     ## Set the limits of the x, y a z
-    if x_min == None:
+    if x_min is None:
         x_min = min(x)
-    if x_max == None:
+    if x_max is None:
         x_max = max(x)
 
-    if y_min == None:
+    if y_min is None:
         y_min = min(y)
-    if y_max == None:
+    if y_max is None:
         y_max = max(y)
 
     if z_min is None:
@@ -296,7 +298,7 @@ def pda_surface(
         X,
         Y,
         Z,
-        cmap=plt.cm.rainbow,
+        cmap="rainbow",
     )
 
     ## Plot adjustments
@@ -309,7 +311,7 @@ def pda_surface(
     plt.tight_layout()  # Tighten the layout
 
     # Save the plot if a save path is provided
-    if save_path != None:
+    if save_path is not None:
         file_name = os.path.join(save_path, cls.NAME + "_surf.png")
         print("\tSaving " + file_name)
         plt.savefig(file_name, dpi=800)
