@@ -10,11 +10,11 @@ class Chromatogram:
         # Run validation to reacive arguments
         assert type(NAME) is str, f"{NAME} must be a string!"
 
-        # Assign to self object (instance attributes)
+       # Instance attributes
         self.NAME = NAME
-        self.INFO = INFO
-        self.PDA_DATA = PDA_DATA
-        self.FL_DATA = {}
+        self.INFO = INFO if INFO is not None else {}
+        self.PDA_DATA = PDA_DATA if PDA_DATA is not None else {}
+        self.FL_DATA = FL_DATA if FL_DATA is not None else {}
 
         # Action to execute
         Chromatogram.all.append(self)
@@ -23,26 +23,29 @@ class Chromatogram:
     def __repr__(self) -> str:
         return f"Chromatogram('{self.NAME}')\n\tPDA:'{self.INFO})"
 
+    # ---------- FL ----------
     @classmethod
-    def from_file(cls, file_path):
-        """Create an instance using the name of the data file"""
+    def create_from_fl(cls, file_path):
+        """Create an instance from a Fluorescence Detector (FL) .csv file."""
 
-        # Extract chromatogram name from filename
-        path_list = file_path.split("\\")
-        filename = path_list[-1].split(".")
+        # Read CSV using pandas (FL data is a dataframe with two columns)
+        fl_data = pd.read_csv(file_path,sep=";",decimal=",")
+        fl_data.rename(columns={"min":"Time"},inplace=True)
 
-        # Create the instance (important to return)
-        return cls(name=filename[0])
+        # Extract name from filename
+        name = file_path.split("\\")[-1].removesuffix("(01).csv") #only for channel 1
 
-    # @classmethod
-    # def create from FL() Develop this method.
+        return cls(
+            NAME=name,
+            INFO = None,
+            FL_DATA=fl_data
+        )
 
+    # ---------- PDAL ----------
     @classmethod
-    def create_from_pda(cls, file_path, detector=None):
+    def create_from_pda(cls, file_path):
         """This method open the data obtained in a Diode Array Detector (DAD) as
         a text file and create an instance of Chromatogram class"""
-
-        print("Openning DAD file...")
 
         # Open the .txt file
         with open(file_path, "r") as file:
@@ -76,7 +79,6 @@ class Chromatogram:
         path_list = file_path.split("\\")
         name = path_list[-1].removesuffix(".txt")
         name = name.removesuffix(" (PDA)")
-        print(name)
 
         # Instanciate object
         return cls(
@@ -85,7 +87,7 @@ class Chromatogram:
             PDA_DATA=data,
         )
 
-    def add_FL(self, file_path, channel):
+    def add_fl(self, file_path, channel):
         """This method add the data obtained in a fluorescence detector, which
         is stored in csv file (time vs intensity)
 
