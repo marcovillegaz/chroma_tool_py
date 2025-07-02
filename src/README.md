@@ -31,3 +31,10 @@ The script:
 - Appends new entries directly below the existing Excel table
 - Maintains formulas (e.g., concentration calculations) by copying them into the new rows
 
+
+# src/display
+The function in display folder are fucntion to plot in differente escenarios.
+ 
+- chroma_plot.py contains various utility function to perofrm different kind of plot with chromaotgrafic signals. 
+- peaks_plot.py contains various utility function to perform plot of peaks in a corresponding chromatogram signal. 
+- 
