@@ -1,4 +1,7 @@
 """
+jasco-db-builder
+jasco-db-updater
+
 This script creates surface plots from PDA data for J. Vidal.
 It processes all PDA files in a given folder.
 """
