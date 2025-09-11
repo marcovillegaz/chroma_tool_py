@@ -4,9 +4,9 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.utils import info
-from src.utils import extract
-from src.utils.extract import clip_pda
+from chroma_tool_py.utils import info
+from chroma_tool_py.utils import extract
+from chroma_tool_py.utils.extract import clip_pda
 
 
 # PLOT 2D
@@ -105,7 +105,7 @@ def fl_plot(cls, save_path=None):
         cls (chromaotgram instance)  : instance of Chromatogram class
     """
 
-    print(f"\tGenerating FL chromatograms from {cls.NAME} data")
+    print(f"\tGenerating FL chromatogram from: {cls.NAME}")
 
     # Extract information necesarry to plot
     fl_data = cls.FL_DATA
@@ -126,7 +126,7 @@ def fl_plot(cls, save_path=None):
     # Save the plot if a save path is provided
     if save_path is not None:
         file_name = os.path.join(save_path, cls.NAME + "_FL.png")
-        print("\tSaving " + file_name)
+        print("\tSaving at: " + file_name)
         plt.savefig(file_name, dpi=800)
         plt.close(fig)
     else:

@@ -2,10 +2,11 @@
 This script creates surface plots from PDA data for J. Vidal.
 It processes all PDA files in a given folder.
 """
-
-from src.classes.chromatogram import Chromatogram
-from src.display import chroma_plot
 import os
+
+from chroma_tool_py.classes import Chromatogram
+from chroma_tool_py.display import chroma_plot
+
 
 # Input and output folders
 RAW_PDA_FOLDER_PATH = r"path/to/data"
@@ -16,6 +17,9 @@ FL_OUTPUT_FOLDER = r"path/to/data"
 # Ensure output directory exists
 if not os.path.exists(PDA_OUTPUT_FOLDER):
     os.makedirs(PDA_OUTPUT_FOLDER)
+
+if not os.path.exists(FL_OUTPUT_FOLDER):
+    os.makedirs(FL_OUTPUT_FOLDER)
 
 # Loop through all .txt files in the input folder
 total_files = len(os.listdir(RAW_PDA_FOLDER_PATH))

@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 
-def merge_files(folder_path, extract_cols):
+def merge_channels(folder_path, extract_cols):
     """
     Merge the single channel peak information into a single dataframe.
 

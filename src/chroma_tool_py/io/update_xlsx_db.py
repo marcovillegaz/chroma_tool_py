@@ -7,7 +7,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.utils import range_boundaries, get_column_letter
 
 
-def load_data(new_df, workbook_path, sheet_name, table_name, batch_name):
+def update_xlsx_db(new_df, workbook_path, sheet_name, table_name, batch_name):
     """
     Add new data to a database stored as Table in a given excel workbook.
 

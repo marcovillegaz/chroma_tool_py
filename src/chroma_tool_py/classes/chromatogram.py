@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+from pathlib import Path
 
 class Chromatogram:
     # This is a class attribute
@@ -33,7 +33,8 @@ class Chromatogram:
         fl_data.rename(columns={"min":"Time"},inplace=True)
 
         # Extract name from filename
-        name = file_path.split("\\")[-1].removesuffix("(01).csv") #only for channel 1
+        name = Path(file_path).stem   # filename without extension
+        name = name.removesuffix("(01).csv") #only for channel 1
 
         return cls(
             NAME=name,
@@ -76,8 +77,7 @@ class Chromatogram:
             info_dict[key] = value
 
         # Chromatogram name
-        path_list = file_path.split("\\")
-        name = path_list[-1].removesuffix(".txt")
+        name = Path(file_path).stem   # filename without extension
         name = name.removesuffix(" (PDA)")
 
         # Instanciate object

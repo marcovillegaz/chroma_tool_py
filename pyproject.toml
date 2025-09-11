@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chroma_tool_py"
+version = "0.1.0"
+description = "A short description"
+authors = [{name = "marco villegas"}]
+dependencies = []
+
+[project.scripts]
+plot-batch-pda = "chroma_tool_py.cli.plot_batch_pda:main"
+plot-batch-fl  = "chroma_tool_py.cli.plot_batch_fl:main"
