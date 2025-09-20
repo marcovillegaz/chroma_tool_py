@@ -14,3 +14,4 @@ data/client_images/
 __pycache__/
 *.pyc
 *.pyo
+.pylintrc
