@@ -1,17 +1,26 @@
+# Virtual environment
 .venv/
+
+# VSCode settings
 .vscode/
+
+# Python package metadata
 *.egg-info/
 
+# Project-specific files
 GWR_project/
 TASKS.md
 OOP.md
 orders/client_data/
+data/client_images/
 .env
 
-data/client_images/
-
-# Python 
+# Python cache and compiled files
 __pycache__/
 *.pyc
 *.pyo
 .pylintrc
+
+# Optional: IDE/editor temporary files
+*.swp
+*.swo
