@@ -81,3 +81,8 @@ chromatgram data.
 
 pda_contour(cls): Create contour plot from pda data (READY)
 pda_2d(cls): Create a 2D chromatogram from your 3D PDA data  (READY)
+
+# CLI 
+plot-batch-pda = "chroma_tool_py.cli.plot_batch_pda:main"
+plot-batch-fl  = "chroma_tool_py.cli.plot_batch_fl:main"
+process-chromnav-batch = "chroma_tool_py.cli.process_chromnav_batch:main"
