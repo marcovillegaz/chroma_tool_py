@@ -1,88 +1,129 @@
-# ChromaToolPy - A Python Toolbox to Work with Chromatogram Data
+<p align="center">
+  <img src="assets/logo.png" alt="chroma_tool_py logo" width="220">
+</p>
 
-![ChromatoPy Logo](Images/logo.png)  <!-- You can add a logo or image here -->
+# chroma_tool_py
 
-`ChromaToolPy` is a Python package designed to facilitate the analysis, processing, and visualization of chromatogram data. It provides tools for peak detection, baseline correction, integration, and more, to streamline chromatographic analysis workflows.
+Python toolbox to load, plot and post-process HPLC-DAD (PDA) and fluorescence (FL)
+chromatograms exported from JASCO **ChromNAV**.
 
-## Features
+[Espanol](README.es.md) | [Documentation](docs/index.md) | [Roadmap](ROADMAP.md) | [Changelog](CHANGELOG.md)
 
-- Easy workflow employing classes
-- Peak detection and characterization
-- Baseline correction and normalization
-- Integration of chromatographic peaks
-- Visualization of chromatograms and results
-- Data export for further analysis
+## Why
 
-# HPLC-signal-processng
-This repository has usefull classes and methods for processing chromatogram data. All the scripts are based in the extractaed information from JASCO's ChromNAV software. The codes can be modified to process other type of information if it is in .txt
+ChromNAV exports **one channel per file** (one `.csv` per FL channel, one peak table
+per PDA channel, a separate `.txt` for the full PDA surface). Merging those files,
+plotting them and collecting peak areas for calibration curves by hand in Excel is slow
+and error-prone. `chroma_tool_py` reads the raw exports, builds objects you can work
+with in Python, and ships command-line tools to process a whole batch in one command.
 
-## Classes
-### **Chromatogram** 
-An instance of a Chromatogram classs is an object that contains all the information of a corresponding HPLC injection. This object can be created from PDA or FL detector data using the class methods (see chromatogram.py)
+## Installation
 
-### **Analyte**
-An instance of a Analyte class is an object that characterized a corresponding analyte. This class is useful to identify the compounds of interest using spectra information. 
+Requires Python 3.10 or newer.
 
-* Create spectra library attribute. 
+```bash
+pip install git+https://github.com/marcovillegaz/chroma_tool_py.git
+```
 
-## Process ChromaNav peak information
-When integrating peaks using ChromaNAV software, you can extract an excel file with the peak information ordered by channels in singles files. For example, CH1.xlsx store all the peaks in channel 1. 
+From a local clone (editable install with the development tools):
 
-### process_chromnav_batch.py (working)
-take the chroman files rearrangen them as dataframe and load into and existing database, in this case a table. 
+```bash
+git clone https://github.com/marcovillegaz/chroma_tool_py.git
+cd chroma_tool_py
+pip install -e ".[dev]"
+```
 
-### merge_calibration_curve.py
-Take a batch of chromnav files and merged the peak info with the concentration of each analites in each point. The scripts return an excel file where each sheet correspond to an analite. Then you can perform manaual analisis of the calibration curves. 
+Optional extra for baseline correction (`utils/chroma_corrector.py`, uses `pybeads`):
 
+```bash
+pip install "chroma_tool_py[baseline] @ git+https://github.com/marcovillegaz/chroma_tool_py.git"
+# or, from a clone: pip install -e ".[baseline]"
+```
 
+## Quickstart (library)
 
+The repository includes real PDA exports in `data/DLLME_Chromatograms/`.
 
+```python
+from pathlib import Path
 
+from chroma_tool_py import Chromatogram
+from chroma_tool_py.display import chroma_plot
+from chroma_tool_py.utils import extract, info
 
+# Load a PDA export (.txt)
+chroma = Chromatogram.create_from_pda("data/DLLME_Chromatograms/1w_ef_x.txt")
+print(chroma.NAME, chroma.PDA_DATA.shape)   # 1w_ef_x (2941, 101)
 
+# Time and wavelength axes, and the signal at one wavelength
+time = info.time(chroma.INFO)               # 2941 points, minutes
+wavelengths = info.wavelenth(chroma.INFO)   # 200-400 nm, 101 points
+signal_254 = extract.by_wavelength(chroma, 254)
 
+# Save plots (without save_path the figure is shown with plt.show())
+out = Path("plots")
+out.mkdir(exist_ok=True)
+chroma_plot.pda_2d(chroma, wavelengths=[250, 300], save_path=str(out))  # 1w_ef_x_2d.png
+chroma_plot.pda_contour(chroma, save_path=str(out))                     # 1w_ef_x_PDA.png
+```
 
+Fluorescence data (`;`-separated CSV with `min` and `Intensity` columns):
 
+```python
+fl = Chromatogram.create_from_fl("path/to/sample (01).csv")
+chroma_plot.fl_plot(fl, save_path="plots")
+```
 
-## post_processing
-When you extract chromatogram information from ChromNav software, like peak area, peak name, etc. You can only extract one channel at a time. This gives you a group of excel files where each file represet the information of one channel of ther PDA detector. In this folder there are a bunch of scripts to postprocess this data. 
+## Command-line tools
 
-## utils.excel
-Utility function to work with HPLC data in excel files.
+Three entry points are installed with the package. All of them accept `--help`.
 
-## Order of the scripts.
-In chromatography a private softaware (Usually develop by the brand) is use for
-data aquisition and data processing. CHromatogram are basically one dimensional 
-signals, where the response is an electric signal of the corresponding detector
-(Diode Array Detector, Ultra Violete, Mass spectometer, absorbancia, among 
-others). The advantages of python is to procces a great quantity of chromat
+| Command | Purpose |
+|---|---|
+| `plot-batch-pda` | Plot every PDA `.txt` in a folder (contour and/or 2D at chosen wavelengths) |
+| `plot-batch-fl` | Plot every FL `.csv` in a folder |
+| `process-chromnav-batch` | Merge per-channel peak tables of a batch into an Excel database table |
 
-1. chroma_raname.py (ready)
-    
-2. merge_chanmels.py (ready)
-    This function is ready and can be called in other scripts. The idea is to use 
-    for multiple folders. In my case each folder is a different experiment.
+```bash
+# PDA: contour + 2D plots at 250 and 300 nm for all files in the folder
+plot-batch-pda --input data/DLLME_Chromatograms --output plots --mode both --wavelengths 250,300
 
-3. chroma_corrector.py 
+# FL
+plot-batch-fl --input path/to/fl_csv --output plots
 
-4. peak_integration.py
+# Peak tables (CH1.xlsx, CH2.xlsx, ...) -> existing Excel database
+process-chromnav-batch --batch path/to/batch_folder --database path/to/database.xlsx
+```
 
-5. chroma-plots.py (semi-ready)
-    This program can plot multiple chromatogram with many options. 
+Options, defaults and the database layout are described in [docs/cli.md](docs/cli.md).
 
-6. **cosmo_bar_plot.py** create a bar plot grouping the analytes by polymer tested, in order to compare the Ln(y). 
+## ChromNAV / JASCO format
 
+The parsers expect the raw ChromNAV exports: a tab-separated PDA `.txt` with a key/value
+header followed by an `INTENSITY` line and the matrix; FL `.csv` files with `;` separator
+and `,` decimals; and peak tables as Excel files named after the channel (`CH1.xlsx`).
+Details and export instructions: [docs/chromnav-format.md](docs/chromnav-format.md).
+Other vendors are not supported.
 
+## Repository layout
 
-# chroma_display.py
+```
+src/chroma_tool_py/
+  classes/      Chromatogram, Analyte, Sequence (+ tkinter ChromaVisualizer)
+  display/      chroma_plot (pda_2d, pda_contour, pda_surface, pda_spectrum, fl_plot), peaks_plot
+  io/           merge_pda_channels, merge_peak_tables, update_xlsx_db, rename
+  processing/   calibration_curve_params
+  utils/        info, extract, peak_finder, excel, chroma_corrector
+  cli/          plot_batch_pda, plot_batch_fl, process_chromnav_batch
+tests/          pytest suite
+examples/       standalone example scripts (some need your own data)
+data/DLLME_Chromatograms/   sample PDA exports
+docs/           documentation
+assets/         logo
+```
 
-chroma_plot.py contains function for different typo of visualizazarion of
-chromatgram data. 
+## Project status
 
-pda_contour(cls): Create contour plot from pda data (READY)
-pda_2d(cls): Create a 2D chromatogram from your 3D PDA data  (READY)
-
-# CLI 
-plot-batch-pda = "chroma_tool_py.cli.plot_batch_pda:main"
-plot-batch-fl  = "chroma_tool_py.cli.plot_batch_fl:main"
-process-chromnav-batch = "chroma_tool_py.cli.process_chromnav_batch:main"
+Alpha (0.1.0). See [ROADMAP.md](ROADMAP.md) for planned work and
+[CONTRIBUTING.md](CONTRIBUTING.md) to get involved. Released under the MIT license
+([LICENSE](LICENSE)).

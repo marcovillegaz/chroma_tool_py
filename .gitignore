@@ -9,7 +9,6 @@
 
 # Project-specific files
 GWR_project/
-OOP.md
 orders/client_data/
 data/client_images/
 .env
