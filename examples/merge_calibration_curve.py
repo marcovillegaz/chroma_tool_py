@@ -8,7 +8,7 @@ analytes. The concentration is taken from a separate excel file.
 
 import os
 import pandas as pd
-from src.utils import excel
+from chroma_tool_py.utils import excel
 
 
 # Function to get concentration based on Chromatogram Name and Peak Name
@@ -61,7 +61,7 @@ def save_chromatogram_sheets(
 # -- Main script starts here --
 
 # Directory containing the files to merge
-files_directory = r"path/to/data"
+files_directory = "path/to/Calibration_Curve_Data"  # data not included in repo
 concentration_file = r"cc_concentrations.xlsx"
 # List of files to merge (without extension)
 channels = ["CH1", "CH9", "CH10", "CH11", "CH12", "CH13", "CH14", "CH15"]

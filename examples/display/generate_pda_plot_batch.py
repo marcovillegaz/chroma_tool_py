@@ -12,10 +12,11 @@ from chroma_tool_py.display import chroma_plot
 
 
 # Input and output folders
-RAW_PDA_FOLDER_PATH = r"path/to/data"
-RAW_FL_FOLDER_PATH = r"path/to/data"
-PDA_OUTPUT_FOLDER = r"path/to/data"
-FL_OUTPUT_FOLDER = r"path/to/data"
+# Replace with your own folders (GWR data is not included in the repo)
+RAW_PDA_FOLDER_PATH = "path/to/raw/PDA"
+RAW_FL_FOLDER_PATH = "path/to/raw/FL"
+PDA_OUTPUT_FOLDER = "path/to/images/PDA"
+FL_OUTPUT_FOLDER = "path/to/images/FL"
 
 # Ensure output directory exists
 if not os.path.exists(PDA_OUTPUT_FOLDER):

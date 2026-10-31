@@ -22,7 +22,7 @@ def cosmos_screening(file_path, save_path="None"):
     # Set axis labels and title
     ax.set_xlabel("Polymers")
     ax.set_ylabel(r"$Ln(\gamma)$")
-    ax.set_title("Grouped Bar Plot of $Ln(\gamma)$ for Each Polymer")
+    ax.set_title(r"Grouped Bar Plot of $Ln(\gamma)$ for Each Polymer")
     ax.set_ylim([-10, 10])
     ax.grid(linewidth=0.5)
 
@@ -67,9 +67,7 @@ def cosmos_screening(file_path, save_path="None"):
     # plt.close("all")
 
 
-# Replace 'your_file.csv' with the actual path to your CSV file
-file_path = r"path/to/data"
-
-cosmos_screening(
-    file_path, save_path=r"path/to/data"
-)
+if __name__ == "__main__":
+    # COSMO results are not included in the repo.
+    file_path = "path/to/cosmo_results.csv"
+    cosmos_screening(file_path, save_path="path/to/output_folder")

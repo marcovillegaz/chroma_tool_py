@@ -5,13 +5,8 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 
-import pandas as pd
-
-from utils import extract, info
-from utils.peak_finder import peak_finder
-
-from classes.chromatogram import Chromatogram
-from chroma_display.chroma_plot import pda_2d
+from chroma_tool_py.utils import extract, info
+from chroma_tool_py.classes.chromatogram import Chromatogram
 
 
 def file_filter(chroma_list, criteria):
@@ -44,8 +39,8 @@ solvents = {
 
 
 # folder with chromatogram of desorprion experimetn
-desorption_pda_path = r"path/to/data"
-desorption_fl_path = r"path/to/data"
+desorption_pda_path = "path/to/HG_ChromNav_Files/PDA_DATA_POINTS/DESORPTION"  # data not included in repo
+desorption_fl_path = "path/to/HG_ChromNav_Files/FL_DATA_POINTS/DESORPTION"  # data not included in repo
 
 # SCRIPT PARAMETERS
 ## Define the sample filter (e.g., 'M3') and the experiment filter (e.g., '4hrs')

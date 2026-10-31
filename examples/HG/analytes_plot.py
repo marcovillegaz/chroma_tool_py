@@ -1,4 +1,4 @@
-"""Thhis script generates a plot of the corresponding chromatograms for the
+"""This script generates a plot of the corresponding chromatograms for the
 sample analysis of HG."""
 
 import os
@@ -7,20 +7,19 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 import pandas as pd
 
-from src.utils import extract, info
-from src.utils.peak_finder import peak_finder
-
-from src.classes.chromatogram import Chromatogram
-from src.display import chroma_plot
+from chroma_tool_py.utils import extract, info
+from chroma_tool_py.utils.peak_finder import peak_finder
+from chroma_tool_py.classes.chromatogram import Chromatogram
+from chroma_tool_py.display import chroma_plot
 
 
 # file of the chromatogram with the 10 analytes
-analytes_pda_path = r"path/to/data"
-analytes_fl_path = r"path/to/data"
+analytes_pda_path = "path/to/HG_ChromNav_Files/PDA_DATA_POINTS/CALIBRATION_CURVE/point_3.txt"  # data not included in repo
+analytes_fl_path = "path/to/HG_ChromNav_Files/FL_DATA_POINTS/CALIBRATION_CURVE/point_3.csv"  # data not included in repo
 
 # file of the blank chromatogram
-blank_pda_path = r"path/to/data"
-blank_fl_path = r"path/to/data"
+blank_pda_path = "path/to/HG_ChromNav_Files/PDA_DATA_POINTS/BLANKS/blank_1.txt"  # data not included in repo
+blank_fl_path = "path/to/HG_ChromNav_Files/FL_DATA_POINTS/BLANKS/blank_1.csv"  # data not included in repo
 
 # SCRIPT PARAMETERS
 ## Define the sample filter (e.g., 'M3') and the experiment filter (e.g., '4hrs')
