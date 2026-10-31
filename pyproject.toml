@@ -35,7 +35,10 @@ dependencies = [
 baseline = ["pybeads"]
 dev = ["pytest", "ruff", "build", "twine"]
 
-# TODO: anadir [project.urls] (Homepage, Issues) cuando exista el repositorio publico.
+[project.urls]
+Homepage = "https://github.com/marcovillegaz/chroma_tool_py"
+Issues = "https://github.com/marcovillegaz/chroma_tool_py/issues"
+Changelog = "https://github.com/marcovillegaz/chroma_tool_py/blob/main/CHANGELOG.md"
 
 [project.scripts]
 plot-batch-pda = "chroma_tool_py.cli.plot_batch_pda:main"
