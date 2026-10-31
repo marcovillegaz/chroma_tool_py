@@ -14,8 +14,9 @@ Guía de desarrollo para empaquetar y publicar el proyecto. Se basa en una revis
 - [x] Quitar rutas personales: `utils/chroma_corrector.py:142,147` (rutas absolutas locales)
 - [x] Decidir si `data/DLLME_Chromatograms/` (~12 MB, muestras reales trackeadas) se puede publicar. **Decision del usuario: se publica** como dataset de ejemplo, por lo que no hace falta limpiar el historial por este motivo. (Si se hubiera decidido no publicarlo, habria que limpiar el historial con `git filter-repo`.)
 - [x] Verificar que `data/GWR_project/` y `data/client_images/` (ignorados) nunca se suban.
-- [ ] Auditar el historial buscando credenciales (`gitleaks`, `git log -p -S`). En el código no se encontró ninguna.
-- [ ] Crear `data/sample/` con un cromatograma sintético pequeño (<100 KB).
+- [x] Auditar el historial (`git log -S`; gitleaks no está instalado). Sin credenciales, pero **el historial contiene rutas personales** (`rutas absolutas locales` en 37 commits, OneDrive en 18) y archivos de proyecto ya borrados (`GWR project/` con `.rar` de 13.9 MB y exports `.csv`/`.txt`; `.git` pesa 42 MB).
+- [ ] Decidir cómo limpiar el historial antes de publicar: `git filter-repo` (quitar `GWR project/` y reescribir rutas) o repo nuevo con historial limpio.
+- [x] Crear `data/sample/` con un cromatograma sintético pequeño (<100 KB). Se regenera con `examples/make_sample_data.py`.
 
 ### 1.2 Imports y dependencias rotas
 - [x] `classes/chroma_visualizer.py:6`: `from utils import info, extract` → import absoluto del paquete.
@@ -45,8 +46,8 @@ Guía de desarrollo para empaquetar y publicar el proyecto. Se basa en una revis
 - [x] LICENSE con nombre completo y año 2023–2026.
 - [x] README: corregir la ruta del logo (`Images/logo.png` no existe; está en `data/others/logo.png`), quitar referencias a archivos que ya no existen, añadir instalación y ejemplos de CLI.
 - [x] `.gitignore`: añadir `dist/`, `build/`, `*.egg-info`, `.venv`, `.vscode`, `.idea`, `*.xlsx`. Resolver `.pylintrc` y `OOP.md` (movido a `docs/design.md`).
-- [ ] `.gitignore`: ignorar `data/*` salvo `data/sample/` y `data/DLLME_Chromatograms/`. Resolver `TASKS.md` (ignorado pero trackeado).
-- [ ] Optimizar `assets/logo.png` (3.1 MB) y revisar `data/others/COSMOS_bar_plot.png`, que sigue trackeado.
+- [x] `.gitignore`: ignorar `data/*` salvo `data/sample/` y `data/DLLME_Chromatograms/`; `TASKS.md` ignorado y fuera del índice.
+- [x] Optimizar `assets/logo.png` (3.1 MB → 134 KB, 800 px de ancho) y sacar `data/others/COSMOS_bar_plot.png` del índice.
 
 ---
 
