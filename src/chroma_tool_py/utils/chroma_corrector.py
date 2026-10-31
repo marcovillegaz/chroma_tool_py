@@ -1,11 +1,9 @@
+import argparse
 import os
-import pybeads as be
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
-plt.rcParams["figure.facecolor"] = "w"
-
 
 def moving_average(a, n=20):
     ret = np.cumsum(a, dtype=float)
@@ -14,6 +12,7 @@ def moving_average(a, n=20):
 
 
 def chroma_plot(old_chroma_data, new_chroma_data):
+    plt.rcParams["figure.facecolor"] = "w"
     # Creating figure
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20, 7), sharex=True)
 
@@ -35,6 +34,14 @@ def chroma_plot(old_chroma_data, new_chroma_data):
 
 
 def beads_correction(y):
+    try:
+        import pybeads as be
+    except ImportError as exc:
+        raise ImportError(
+            "pybeads is required for BEADS baseline correction. "
+            "Install it with: pip install chroma_tool_py[baseline]"
+        ) from exc
+
     # Sigmoid function
     def sigmoid(x):
         return 1 / (1 + np.exp(-x))
@@ -109,7 +116,7 @@ def main(main_path):
 
         if answer == "yes":
             print("Overwriting new data in: ", chroma_name)
-            new_chroma_data.to_csv(chroma_path, sep=";", header=True, index=False)
+            beads_chroma_data.to_csv(chroma_path, sep=";", header=True, index=False)
 
         elif answer == "mv":
             print("Applaying moving average denoising...")
@@ -131,22 +138,13 @@ def main(main_path):
         #
 
 
-# INPUT
-# \MainDirectory
-#   \Data (Chromatogram data)
-#   \Image (Chromatogram images)
-#   Intervals.csv
-#   Results.csv
-
-# Main directory path were the subfolders are stored
-main_path = r"path/to/data"
-
-# You can first run the code with out exceptions, then anailze the images to
-# discard chromatogramas that has a bad correction and write them in
-# exceptions.txt
-exception_path = r"path/to/data"
-
-main(main_path)
-
-
-# IN FUTURE APLY os.path.join() to add paths more intelligently
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Interactive BEADS baseline correction of merged chromatograms."
+    )
+    parser.add_argument(
+        "main_path",
+        help="Main directory; chromatogram CSVs are read from <main_path>/merged_data",
+    )
+    args = parser.parse_args()
+    main(args.main_path)
