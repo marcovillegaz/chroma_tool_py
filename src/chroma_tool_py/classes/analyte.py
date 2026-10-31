@@ -16,7 +16,8 @@ class Analyte:
         wavelength: wavelength (nm) where the analye is quantified in the PDA surface
         """
         # Run validation to reacive arguments
-        assert type(name) is str, f"{name} must be a string!"
+        if not isinstance(name, str):
+            raise TypeError(f"{name!r} must be a string!")
 
         # Assign to self object (instance attributes)
         self.name = name

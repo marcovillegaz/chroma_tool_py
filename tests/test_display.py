@@ -23,9 +23,9 @@ def test_pda_spectrum(pda_chromatogram):
     chroma_plot.pda_spectrum(pda_chromatogram, [3.001, 5.001])
 
 
-@pytest.mark.xfail(strict=False, reason="extract.by_time con tiempo exacto indexa data[:, index] (eje equivocado) -> IndexError; deberia ser data[index, :] (bug no listado)")
 def test_pda_spectrum_exact_time(pda_chromatogram):
     chroma_plot.pda_spectrum(pda_chromatogram, [3.0])
+    assert plt.get_fignums() == []
 
 
 def test_pda_contour_saves(pda_chromatogram, tmp_path):
@@ -44,8 +44,8 @@ def test_fl_plot_from_create_from_fl(fl_csv, tmp_path):
     assert any(tmp_path.glob("*_FL.png"))
 
 
-@pytest.mark.xfail(strict=False, reason="fl_plot espera DataFrame con 'Time'/'Intensity'; add_fl deja un dict (Fase C)")
-def test_fl_plot_after_add_fl(fl_csv):
+def test_fl_plot_after_add_fl(fl_csv, tmp_path):
     c = Chromatogram("x", None)
     c.add_fl(fl_csv, "CH1")
-    chroma_plot.fl_plot(c)
+    chroma_plot.fl_plot(c, save_path=str(tmp_path))
+    assert any(tmp_path.glob("*_FL.png"))

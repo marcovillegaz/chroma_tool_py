@@ -8,7 +8,8 @@ class Chromatogram:
 
     def __init__(self, NAME, INFO, PDA_DATA=None, FL_DATA=None):
         # Run validation to reacive arguments
-        assert type(NAME) is str, f"{NAME} must be a string!"
+        if not isinstance(NAME, str):
+            raise TypeError(f"{NAME!r} must be a string!")
 
        # Instance attributes
         self.NAME = NAME
@@ -30,11 +31,11 @@ class Chromatogram:
 
         # Read CSV using pandas (FL data is a dataframe with two columns)
         fl_data = pd.read_csv(file_path,sep=";",decimal=",")
-        fl_data.rename(columns={"min":"Time"},inplace=True)
+        fl_data = fl_data.rename(columns={"min": "Time"})
 
         # Extract name from filename
         name = Path(file_path).stem   # filename without extension
-        name = name.removesuffix("(01).csv") #only for channel 1
+        name = name.removesuffix("(01)").strip()  # ChromNAV channel suffix
 
         return cls(
             NAME=name,
@@ -48,23 +49,27 @@ class Chromatogram:
         """This method open the data obtained in a Diode Array Detector (DAD) as
         a text file and create an instance of Chromatogram class"""
 
-        # Open the .txt file
-        with open(file_path, "r") as file:
+        # Open the .txt file (ChromNAV exports are ASCII-compatible; the
+        # fixed utf-8 encoding avoids depending on the platform default)
+        with open(file_path, "r", encoding="utf-8") as file:
             lines = file.readlines()
 
         # "Data comprises raw, unprocessed facts that need context to become
         #  useful, while information is data that has been processed, organized,
         #  and interpreted to add meaning and value."
 
-        # Extract PDA information and data in .txt file (depend of HPLC software)
-        data = []
-        info = []
-        for i, line in enumerate(lines):
-            if i < 11:
-                info.append(line)
-            elif i > 11:
-                row = list(map(int, line.split()))
-                data.append(row)
+        # The header ends at the separator line "INTENSITY" (no tab); the
+        # numeric matrix follows it. This supports headers of any length.
+        sep_idx = next(
+            (i for i, line in enumerate(lines) if line.strip() == "INTENSITY"),
+            None,
+        )
+        if sep_idx is None:
+            raise ValueError(f"{file_path}: no 'INTENSITY' separator line found")
+        info = lines[:sep_idx]
+        data = [
+            list(map(int, line.split())) for line in lines[sep_idx + 1:] if line.strip()
+        ]
 
         # PDA data
         data = np.array(data)
@@ -72,8 +77,8 @@ class Chromatogram:
         # PDA information
         info_dict = {}
         for item in info:
-            item = item.replace("\n", "").replace(",", ".")
-            key, value = item.split("\t")
+            item = item.replace("\n", "").replace("\r", "").replace(",", ".")
+            key, value = item.split("\t", 1)
             info_dict[key] = value
 
         # Chromatogram name
@@ -98,11 +103,10 @@ class Chromatogram:
 
         # Read csv file
         df = pd.read_csv(file_path, sep=";", decimal=",")
-        # Define FL dictionary
-        FL_dict = {}
-        FL_dict["time"] = df["min"].to_numpy()
-        FL_dict[channel] = df["Intensity"].to_numpy()
-        # Assignt to FL_data attribute
-        self.FL_DATA = FL_dict
+        # Same schema as create_from_fl: DataFrame with "Time" and "Intensity".
+        # `channel` is kept as a label in df.attrs (not as a column name).
+        df = df.rename(columns={"min": "Time"})[["Time", "Intensity"]]
+        df.attrs["channel"] = channel
+        self.FL_DATA = df
 
     # def add_PDA()  (DEVELOP THIS METHOD)
