@@ -107,6 +107,10 @@ and `,` decimals; and peak tables as Excel files named after the channel (`CH1.x
 Details and export instructions: [docs/chromnav-format.md](docs/chromnav-format.md).
 Other vendors are not supported.
 
+> ChromNAV is a product of JASCO Corporation. This project is independent and is not
+> affiliated with or endorsed by JASCO; the ChromNAV mark in the logo only indicates
+> compatibility with its export format.
+
 ## Repository layout
 
 ```

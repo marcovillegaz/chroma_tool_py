@@ -17,3 +17,7 @@ Desde un clon del repositorio: `pip install -e ".[dev]"`. Extra opcional para co
 linea base: `.[baseline]`.
 
 La documentacion completa esta en ingles: [README.md](README.md) y [docs/index.md](docs/index.md).
+
+> ChromNAV es un producto de JASCO Corporation. Este proyecto es independiente y no esta
+> afiliado ni respaldado por JASCO; la marca ChromNAV del logo solo indica compatibilidad
+> con su formato de exportacion.
