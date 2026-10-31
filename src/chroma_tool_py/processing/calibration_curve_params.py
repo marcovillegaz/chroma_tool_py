@@ -17,6 +17,10 @@ def extract_calibration_data(excel_path, summary_sheet_name="Calibration_Summary
         summary_data = []
 
         for sheet_name in xls.sheet_names:
+            # Skip the summary written by a previous run
+            if sheet_name == summary_sheet_name:
+                continue
+
             # Read only the required range (H2:I4)
             df = pd.read_excel(xls, sheet_name=sheet_name, usecols="H:I", skiprows=1, nrows=3, header=None)
 
@@ -28,7 +32,9 @@ def extract_calibration_data(excel_path, summary_sheet_name="Calibration_Summary
         summary_df = pd.DataFrame(summary_data, columns=["Sheet Name", "Slope", "Intercept", "R²"])
 
         # Save the summary to a new sheet
-        with pd.ExcelWriter(excel_path, engine="openpyxl", mode="a") as writer:
+        with pd.ExcelWriter(
+            excel_path, engine="openpyxl", mode="a", if_sheet_exists="replace"
+        ) as writer:
             summary_df.to_excel(writer, sheet_name=summary_sheet_name, index=False)
 
     print(f"Calibration summary saved in '{summary_sheet_name}' sheet of {excel_path}")

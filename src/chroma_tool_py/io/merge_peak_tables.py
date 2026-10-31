@@ -31,7 +31,7 @@ def merge_peak_tables(folder_path, extract_cols):
         # Read excel file
         raw_df = pd.read_excel(io=os.path.join(folder_path, filename))
         # Filter by important columns
-        filter_df = raw_df[extract_cols]
+        filter_df = raw_df[extract_cols].copy()
         # Remove last three numbers in Chromatogram_name (For ChromNav software)
         filter_df.loc[:, "Chromatogram Name"] = filter_df["Chromatogram Name"].str[:-4]
         # Append dataframes

@@ -90,7 +90,7 @@ def remove_pattern_from_filenames(folder_path, pattern, dry_run=True):
 
 
 def remove_pattern_regex(folder_path, regex_pattern, dry_run=True):
-    """
+    r"""
     Remove a regex pattern from all filenames in a folder.
 
     Args:

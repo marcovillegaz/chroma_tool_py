@@ -1,5 +1,6 @@
 import warnings
 
+import pandas as pd
 import pytest
 
 from chroma_tool_py.io.rename import (
@@ -58,6 +59,19 @@ def test_replace_pattern(tmp_path):
 
 
 class TestMergeChannels:
+    def test_no_settingwithcopywarning(self, peaks_folder):
+        with warnings.catch_warnings():
+            # En pandas >= 3 (Copy-on-Write) la clase ya no existe; ahi el test
+            # solo garantiza que no aparezcan avisos de "copy" (no otros, p.ej.
+            # el de inplace=True en rename, ajeno a este cambio).
+            warn_cls = getattr(pd.errors, "SettingWithCopyWarning", None)
+            if warn_cls is not None:
+                warnings.simplefilter("error", warn_cls)
+            else:
+                warnings.filterwarnings("error", message=".*(SettingWithCopy|on a copy).*")
+            df = merge_channels(str(peaks_folder), self.COLS)
+        assert len(df) == 4
+
     COLS = ["Acquisition Date", "Chromatogram Name", "CH", "Peak Name", "Area"]
 
     def test_merge(self, peaks_folder):
@@ -75,3 +89,33 @@ class TestMergeChannels:
         assert sorted(df["SAMPLE NUMBER"].unique()) == [12, 13]
         assert str(df["SAMPLE NUMBER"].dtype) == "Int64"
         assert df["AREA"].sum() == pytest.approx(100 + 200 + 200 + 400)
+
+
+class TestCalibrationCurveParams:
+    @staticmethod
+    def _make_xlsx(path):
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        wb.active.title = "NAP"
+        for name, vals in (("NAP", (2.0, 0.5, 0.99)), ("PYR", (3.0, 0.1, 0.98))):
+            ws = wb[name] if name in wb.sheetnames else wb.create_sheet(name)
+            for i, v in enumerate(vals):  # H2:I4
+                ws.cell(row=2 + i, column=8, value=["Slope", "Intercept", "R2"][i])
+                ws.cell(row=2 + i, column=9, value=v)
+        wb.save(path)
+
+    def test_run_twice(self, tmp_path):
+        from openpyxl import load_workbook
+        from chroma_tool_py.processing.calibration_curve_params import extract_calibration_data
+
+        xlsx = tmp_path / "cal.xlsx"
+        self._make_xlsx(xlsx)
+        df1 = extract_calibration_data(str(xlsx))
+        assert list(df1["Sheet Name"]) == ["NAP", "PYR"]
+        assert list(df1["Slope"]) == [2.0, 3.0]
+        # segunda ejecucion: antes fallaba (hoja ya existente)
+        extract_calibration_data(str(xlsx))
+        wb = load_workbook(xlsx)
+        assert wb.sheetnames.count("Calibration_Summary") == 1
+        assert wb["Calibration_Summary"].max_row == 3
