@@ -1,4 +1,4 @@
-"""merge_channels.py
+"""merge_pda_channels.py
 in HPLC-DAD you could get signals from different channels (or wavelengths). My
 HPLC software returns me the data of each channel in independent .csv file. This
 program merge multichannel data ina single .csv file. Also, the program can plot

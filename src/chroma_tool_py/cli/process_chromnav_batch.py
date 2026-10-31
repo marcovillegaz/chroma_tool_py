@@ -16,7 +16,7 @@ Usage:
 
 import os
 import argparse
-from chroma_tool_py.io import merge_channels, update_xlsx_db
+from chroma_tool_py.io import merge_peak_tables, update_xlsx_db
 
 
 def main():
@@ -45,7 +45,7 @@ def main():
     extract_cols = ["Acquisition Date", "Chromatogram Name", "CH", "Peak Name", "Area"]
 
     # Merge peak information into a single dataframe
-    appended_df = merge_channels(batch_folder, extract_cols)
+    appended_df = merge_peak_tables(batch_folder, extract_cols)
 
     # print(appended_df)
 
