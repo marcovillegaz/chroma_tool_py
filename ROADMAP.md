@@ -11,40 +11,42 @@ Guía de desarrollo para empaquetar y publicar el proyecto. Se basa en una revis
 ## Etapa 1 — Bloqueantes antes de publicar
 
 ### 1.1 Datos y rutas personales
-- [ ] Quitar rutas personales: `utils/chroma_corrector.py:142,147` (rutas absolutas locales)
-- [ ] Decidir si `data/DLLME_Chromatograms/` (~12 MB, muestras reales trackeadas) se puede publicar. Si no, limpiar el historial con `git filter-repo` o crear un repo nuevo con historial limpio. Borrar el archivo no basta.
-- [ ] Verificar que `data/GWR_project/` y `data/client_images/` (ignorados) nunca se suban.
+- [x] Quitar rutas personales: `utils/chroma_corrector.py:142,147` (rutas absolutas locales)
+- [x] Decidir si `data/DLLME_Chromatograms/` (~12 MB, muestras reales trackeadas) se puede publicar. **Decision del usuario: se publica** como dataset de ejemplo, por lo que no hace falta limpiar el historial por este motivo. (Si se hubiera decidido no publicarlo, habria que limpiar el historial con `git filter-repo`.)
+- [x] Verificar que `data/GWR_project/` y `data/client_images/` (ignorados) nunca se suban.
 - [ ] Auditar el historial buscando credenciales (`gitleaks`, `git log -p -S`). En el código no se encontró ninguna.
 - [ ] Crear `data/sample/` con un cromatograma sintético pequeño (<100 KB).
 
 ### 1.2 Imports y dependencias rotas
-- [ ] `classes/chroma_visualizer.py:6`: `from utils import info, extract` → import absoluto del paquete.
-- [ ] `pyproject.toml`: añadir numpy, scipy y matplotlib (hoy solo declara pandas, openpyxl y xlrd). `pybeads` como extra opcional.
-- [ ] Añadir `__init__.py` en `cli/` y `processing/` (sin ellos los entry points fallan tras `pip install`).
-- [ ] `io/__init__.py` sombrea el submódulo `merge_channels` con la función homónima; `cli/process_chromnav_batch.py` depende de ello. Corregir ambos.
-- [ ] `utils/chroma_corrector.py` ejecuta código con rutas a nivel de módulo: mover a `if __name__ == "__main__"` o eliminar.
+- [x] `classes/chroma_visualizer.py:6`: `from utils import info, extract` → import absoluto del paquete.
+- [x] `pyproject.toml`: añadir numpy, scipy y matplotlib (hoy solo declara pandas, openpyxl y xlrd). `pybeads` como extra opcional.
+- [x] Añadir `__init__.py` en `cli/` y `processing/` (sin ellos los entry points fallan tras `pip install`).
+- [x] `io/__init__.py` sombrea el submódulo `merge_channels` con la función homónima; `cli/process_chromnav_batch.py` depende de ello. Corregir ambos.
+- [x] `utils/chroma_corrector.py` ejecuta código con rutas a nivel de módulo: mover a `if __name__ == "__main__"` o eliminar.
 
 ### 1.3 Duplicados y obsoletos
-- [ ] Renombrar los dos `merge_channels.py`: `io/merge_pda_channels.py` (une canales y grafica) y `io/merge_peak_tables.py` (une Excel de picos).
-- [ ] Borrar `utils/peak_finder copy.py` (no importable, parámetros distintos).
-- [ ] Borrar `obsolete/`, `dev/`, `test/` (scripts manuales, no pytest) y `__pycache__`.
-- [ ] `io/` y `utils/` se solapan: redistribuir el contenido.
+- [x] Renombrar los dos `merge_channels.py`: `io/merge_pda_channels.py` (une canales y grafica) y `io/merge_peak_tables.py` (une Excel de picos).
+- [x] Borrar `utils/peak_finder copy.py` (no importable, parámetros distintos).
+- [x] Borrar `obsolete/`, `dev/`, `test/` (scripts manuales, no pytest) y `__pycache__`.
+- [x] `io/` y `utils/` se solapan: redistribuir el contenido.
 
 ### 1.4 Bugs de código
-- [ ] `Chromatogram.create_from_fl`: `removesuffix("(01).csv")` sobre un `stem` nunca recorta nada.
-- [ ] `Chromatogram.create_from_pda`: cabecera fija de 11 líneas (`i < 11`, `i > 11`), sin `encoding`. Leer la cabecera por clave.
-- [ ] `add_fl` guarda un dict y `create_from_fl` un DataFrame: unificar el tipo de `FL_DATA`.
-- [ ] `Sequence.execute` está mal indentado dentro de `__init__` (código muerto).
-- [ ] `assert type(x) is str` en `Chromatogram`, `Analyte` y `Sequence`: usar `isinstance` + `TypeError`.
-- [ ] `utils/merge_channels.py`: corta los últimos 4 caracteres del nombre y asigna con `.loc` sobre un slice (`SettingWithCopyWarning`).
-- [ ] `processing/calibration_curve_params.py`: rango fijo `H2:I4` y reescritura del mismo Excel en modo append (falla si la hoja existe).
+- [x] `Chromatogram.create_from_fl`: `removesuffix("(01).csv")` sobre un `stem` nunca recorta nada.
+- [x] `Chromatogram.create_from_pda`: cabecera fija de 11 líneas (`i < 11`, `i > 11`), sin `encoding`. Leer la cabecera por clave.
+- [x] `add_fl` guarda un dict y `create_from_fl` un DataFrame: unificar el tipo de `FL_DATA`.
+- [x] `Sequence.execute` está mal indentado dentro de `__init__` (código muerto).
+- [x] `assert type(x) is str` en `Chromatogram`, `Analyte` y `Sequence`: usar `isinstance` + `TypeError`.
+- [x] `io/merge_pda_channels.py` (antes `utils/merge_channels.py`): corta los últimos 4 caracteres del nombre y asigna con `.loc` sobre un slice (`SettingWithCopyWarning`).
+- [x] `processing/calibration_curve_params.py`: rango fijo `H2:I4` y reescritura del mismo Excel en modo append (falla si la hoja existe).
 
 ### 1.5 Metadatos y documentación mínima
-- [ ] `pyproject.toml`: descripción real, `readme`, `requires-python = ">=3.10"`, licencia, autores, keywords, classifiers, `[project.urls]`.
-- [ ] Reemplazar `requirements.txt` (UTF-16, pins de 2023) por extras en `pyproject.toml`.
-- [ ] LICENSE con nombre completo y año 2023–2026.
-- [ ] README: corregir la ruta del logo (`Images/logo.png` no existe; está en `data/others/logo.png`), quitar referencias a archivos que ya no existen, añadir instalación y ejemplos de CLI.
-- [ ] `.gitignore`: añadir `dist/`, `build/`, `*.egg-info`, `.venv`, `.vscode`, `.idea`, `*.xlsx`, `data/*` salvo `data/sample/`. Resolver `.pylintrc` (ignorado pero existe), `OOP.md` y `TASKS.md` (ignorados pero trackeados).
+- [x] `pyproject.toml`: descripción real, `readme`, `requires-python = ">=3.10"`, licencia, autores, keywords, classifiers, `[project.urls]`.
+- [x] Reemplazar `requirements.txt` (UTF-16, pins de 2023) por extras en `pyproject.toml`.
+- [x] LICENSE con nombre completo y año 2023–2026.
+- [x] README: corregir la ruta del logo (`Images/logo.png` no existe; está en `data/others/logo.png`), quitar referencias a archivos que ya no existen, añadir instalación y ejemplos de CLI.
+- [x] `.gitignore`: añadir `dist/`, `build/`, `*.egg-info`, `.venv`, `.vscode`, `.idea`, `*.xlsx`. Resolver `.pylintrc` y `OOP.md` (movido a `docs/design.md`).
+- [ ] `.gitignore`: ignorar `data/*` salvo `data/sample/` y `data/DLLME_Chromatograms/`. Resolver `TASKS.md` (ignorado pero trackeado).
+- [ ] Optimizar `assets/logo.png` (3.1 MB) y revisar `data/others/COSMOS_bar_plot.png`, que sigue trackeado.
 
 ---
 
