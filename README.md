@@ -42,7 +42,9 @@ pip install "chroma_tool_py[baseline] @ git+https://github.com/marcovillegaz/chr
 
 ## Quickstart (library)
 
-The repository includes real PDA exports in `data/DLLME_Chromatograms/`.
+The repository includes real PDA exports in `data/DLLME_Chromatograms/` and a
+tiny synthetic PDA/FL pair in `data/sample/` (regenerate it with
+`python examples/make_sample_data.py`).
 
 ```python
 from pathlib import Path
@@ -118,6 +120,7 @@ src/chroma_tool_py/
 tests/          pytest suite
 examples/       standalone example scripts (some need your own data)
 data/DLLME_Chromatograms/   sample PDA exports
+data/sample/                synthetic PDA + FL example (< 100 KB)
 docs/           documentation
 assets/         logo
 ```
