@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import ttk
-from utils import info, extract
+from chroma_tool_py.utils import info, extract
 
 
 class ChromaVisualizer:

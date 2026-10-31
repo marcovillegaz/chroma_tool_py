@@ -9,7 +9,6 @@
 
 # Project-specific files
 GWR_project/
-TASKS.md
 OOP.md
 orders/client_data/
 data/client_images/
@@ -19,8 +18,17 @@ data/client_images/
 __pycache__/
 *.pyc
 *.pyo
-.pylintrc
 
 # Optional: IDE/editor temporary files
 *.swp
 *.swo
+
+# Build / packaging
+dist/
+build/
+
+# IDE
+.idea/
+
+# Data exports
+*.xlsx

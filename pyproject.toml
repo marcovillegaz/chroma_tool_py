@@ -1,17 +1,41 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "chroma_tool_py"
 version = "0.1.0"
-description = "A short description"
-authors = [{name = "Marco Villegas"}]
+description = "Herramienta para procesar y graficar cromatogramas HPLC-DAD/FL exportados de ChromNAV"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Marco Villegas", email = "marcovillegas.g@gmail.com"}]
+keywords = ["chromatography", "HPLC", "DAD", "fluorescence", "ChromNAV", "plotting"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
+    "numpy",
     "pandas",
+    "matplotlib",
+    "scipy",
     "openpyxl",
     "xlrd",
 ]
+
+[project.optional-dependencies]
+baseline = ["pybeads"]
+dev = ["pytest", "ruff", "build", "twine"]
+
+# TODO: anadir [project.urls] (Homepage, Issues) cuando exista el repositorio publico.
 
 [project.scripts]
 plot-batch-pda = "chroma_tool_py.cli.plot_batch_pda:main"
@@ -21,3 +45,13 @@ process-chromnav-batch = "chroma_tool_py.cli.process_chromnav_batch:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
