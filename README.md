@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" alt="chroma_tool_py logo" width="220">
+  <img src="assets/logo.png" alt="chroma_tool_py logo" width="500">
 </p>
 
 # chroma_tool_py
@@ -80,11 +80,11 @@ chroma_plot.fl_plot(fl, save_path="plots")
 
 Three entry points are installed with the package. All of them accept `--help`.
 
-| Command | Purpose |
-|---|---|
-| `plot-batch-pda` | Plot every PDA `.txt` in a folder (contour and/or 2D at chosen wavelengths) |
-| `plot-batch-fl` | Plot every FL `.csv` in a folder |
-| `process-chromnav-batch` | Merge per-channel peak tables of a batch into an Excel database table |
+| Command                  | Purpose                                                                     |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `plot-batch-pda`         | Plot every PDA `.txt` in a folder (contour and/or 2D at chosen wavelengths) |
+| `plot-batch-fl`          | Plot every FL `.csv` in a folder                                            |
+| `process-chromnav-batch` | Merge per-channel peak tables of a batch into an Excel database table       |
 
 ```bash
 # PDA: contour + 2D plots at 250 and 300 nm for all files in the folder
