@@ -33,6 +33,29 @@ class TestExtract:
         out = extract.by_wavelength(c, 251)  # entre indices 25 y 26
         np.testing.assert_allclose(out, 0.5 * c.PDA_DATA[:, 25] + 0.5 * c.PDA_DATA[:, 26])
 
+    def test_by_time_exact_is_row(self, pda_chromatogram):
+        c = pda_chromatogram
+        t = info.time(c.INFO)
+        k = int(np.argmin(np.abs(t - 3.0)))
+        out = extract.by_time(c, float(t[k]))
+        assert out.shape == (101,)
+        np.testing.assert_array_equal(out, c.PDA_DATA[k, :])
+
+    def test_by_time_exact_vs_interpolated_consistent(self, pda_chromatogram):
+        c = pda_chromatogram
+        t = info.time(c.INFO)
+        k = 1000
+        exact = extract.by_time(c, float(t[k]))
+        # un tiempo apenas desplazado (interpolado) da casi el mismo espectro
+        near = extract.by_time(c, float(t[k]) + 1e-6)
+        assert near.shape == exact.shape
+        np.testing.assert_allclose(near, exact, atol=1.0)
+        # punto medio = media de las filas vecinas
+        mid = extract.by_time(c, float((t[k] + t[k + 1]) / 2))
+        np.testing.assert_allclose(
+            mid, 0.5 * c.PDA_DATA[k, :] + 0.5 * c.PDA_DATA[k + 1, :], atol=1e-6
+        )
+
     def test_find_neighbors_and_interpolate(self):
         assert extract.find_neighbors([2, 4, 6, 8], 5) == [1, 2]
         out = extract.interpolate_v(np.array([0.0, 10.0]), np.array([10.0, 20.0]), 0, 2, 1)

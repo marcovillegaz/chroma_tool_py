@@ -100,7 +100,7 @@ def by_time(cls, time):
     if time in time_array:
         # Extract the correpsonding array by index
         index = np.where(time_array == time)[0]
-        intensity = data[:, index].flatten()
+        intensity = data[index, :].flatten()
     else:
         # indenify neighbors of time
         idx = find_neighbors(time_array, time)
