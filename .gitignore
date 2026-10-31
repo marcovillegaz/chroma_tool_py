@@ -10,8 +10,13 @@
 # Project-specific files
 GWR_project/
 orders/client_data/
-data/client_images/
+TASKS.md
 .env
+
+# Data: only the published example datasets are tracked
+data/*
+!data/DLLME_Chromatograms/
+!data/sample/
 
 # Python cache and compiled files
 __pycache__/
