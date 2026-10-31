@@ -38,8 +38,10 @@ def merge_channels(folder_path, extract_cols):
         appended_df = pd.concat([appended_df, filter_df], ignore_index=True)
 
     # Extract numeric part from "name" column and convert to integers
+    # Using r"" for raw string to avoid escape sequence warning
+    # Using Int64 (nullable integer) to handle potential NaN values
     appended_df["SAMPLE NUMBER"] = (
-        appended_df["Chromatogram Name"].str.extract("(\d+)").astype(int)
+        appended_df["Chromatogram Name"].str.extract(r"(\d+)")[0].astype("Int64")
     )
 
     # Change columns name.
